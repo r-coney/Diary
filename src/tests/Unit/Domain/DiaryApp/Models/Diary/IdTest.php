@@ -21,7 +21,7 @@ class IdTest extends TestCase
     }
 
     /**
-     * value()
+     *
      * @test
      */
     public function idに無効な値を設定した場合、例外をthrowすること(): void
