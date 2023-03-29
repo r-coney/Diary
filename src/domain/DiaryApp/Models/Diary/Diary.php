@@ -10,8 +10,9 @@ use Domain\DiaryApp\Models\Diary\Title;
 use Domain\DiaryApp\Models\Diary\Content;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
+use Domain\DiaryApp\Models\Entity;
 
-class Diary
+class Diary implements Entity
 {
     private Id $id;
     private UserId $userId;
@@ -155,7 +156,7 @@ class Diary
     public function changeMainCategoryId(CategoryId $mainCategoryId): void
     {
         $this->mainCategoryId = $mainCategoryId;
-        $this->updatedAt = time();
+        $this->changeUpdatedAt();
     }
 
     /**
@@ -202,5 +203,18 @@ class Diary
     private function changeUpdatedAt(): void
     {
         $this->updatedAt = date("Y-m-d H:i:s");
+    }
+
+    public function equals(?Entity $other): bool
+    {
+        if (is_null($other)) {
+            return false;
+        }
+
+        if ($this === $other) {
+            return true;
+        }
+
+        return $this->id === $other->id();
     }
 }
