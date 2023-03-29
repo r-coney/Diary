@@ -18,22 +18,14 @@ class DiaryTest extends TestCase
      */
     public function Diaryモデルを作成できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date("Y-m-d H:i:s");
-
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date("Y-m-d H:i:s")
         );
 
         $this->assertInstanceOf(Diary::class, $diary);
@@ -46,52 +38,36 @@ class DiaryTest extends TestCase
     {
         $this->expectException(InvalidCategoryIdException::class);
 
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(1);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
         new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(1),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
         );
     }
 
     /**
-     * Id()
+     * id()
      * @test
      */
     public function IDを取得できること(): void
     {
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
-        $expected = 1;
-        $id = new Id($expected);
+        $expected = new Id(1);
 
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            $expected,
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
         );
 
-        $this->assertSame($expected, $diary->id());
+        $this->assertSame($expected->value(), $diary->id());
     }
 
     /**
@@ -100,27 +76,19 @@ class DiaryTest extends TestCase
      */
     public function ユーザーIDを取得できること(): void
     {
-        $id = new Id(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
-        $expected = 1;
-        $userId = new UserId($expected);
+        $expected = new UserId(1);
 
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            $expected,
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
         );
 
-        $this->assertSame($expected, $diary->userId());
+        $this->assertSame($expected->value(), $diary->userId());
     }
 
     /**
@@ -129,27 +97,19 @@ class DiaryTest extends TestCase
      */
     public function メインカテゴリーを取得できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
-        $expected = 1;
-        $mainCategoryId = new CategoryId($expected);
+        $expected = new CategoryId(1);
 
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            $expected,
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
         );
 
-        $this->assertSame($expected, $diary->mainCategoryId());
+        $this->assertSame($expected->value(), $diary->mainCategoryId());
     }
 
     /**
@@ -158,27 +118,19 @@ class DiaryTest extends TestCase
      */
     public function サブカテゴリーを取得できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
-        $expected = 2;
-        $subCategoryId = new CategoryId($expected);
+        $expected = new CategoryId(2);
 
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            $expected,
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
         );
 
-        $this->assertSame($expected, $diary->subCategoryId());
+        $this->assertSame($expected->value(), $diary->subCategoryId());
     }
 
     /**
@@ -187,24 +139,16 @@ class DiaryTest extends TestCase
      */
     public function サブカテゴリーが設定されていない場合、nullを取得できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
         $expected = null;
-        $subCategoryId = $expected;
 
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            $expected,
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
         );
 
         $this->assertSame($expected, $diary->subCategoryId());
@@ -216,27 +160,19 @@ class DiaryTest extends TestCase
      */
     public function タイトルを取得できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
-        $expected = 'タイトル';
-        $title = new Title($expected);
+        $expected = new Title('タイトル');
 
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            $expected,
+            new Content('本文'),
+            date('Y-m-d H:i:s')
         );
 
-        $this->assertSame($expected, $diary->title());
+        $this->assertSame($expected->value(), $diary->title());
     }
 
      /**
@@ -245,27 +181,19 @@ class DiaryTest extends TestCase
      */
     public function 本文を取得できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $createdAt = date('Y-m-d H:i:s');
-
-        $expected = '本文';
-        $content = new Content($expected);
+        $expected = new Content('本文');
 
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            $expected,
+            date('Y-m-d H:i:s')
         );
 
-        $this->assertSame($expected, $diary->content());
+        $this->assertSame($expected->value(), $diary->content());
     }
 
     /**
@@ -274,24 +202,16 @@ class DiaryTest extends TestCase
      */
     public function 本文が設定されていない場合、nullを取得できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $createdAt = date('Y-m-d H:i:s');
-
         $expected = null;
-        $content = $expected;
 
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            $expected,
+            date('Y-m-d H:i:s')
         );
 
         $this->assertSame($expected, $diary->content());
@@ -303,27 +223,41 @@ class DiaryTest extends TestCase
      */
     public function 登録日時を取得できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-
         $expected = date('Y-m-d H:i:s');
-        $createdAt = $expected;
 
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            $expected
         );
 
         $this->assertSame($expected, $diary->createdAt());
+    }
+
+    /**
+     * updatedAt()
+     * @test
+     */
+    public function 更新日時を取得できること(): void
+    {
+        $expected = date('Y-m-d H:i:s');
+
+        $diary = new Diary(
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s'),
+            $expected
+        );
+
+        $this->assertSame($expected, $diary->updatedAt());
     }
 
     /**
@@ -332,28 +266,20 @@ class DiaryTest extends TestCase
      */
     public function メインカテゴリーを変更できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s'),
         );
 
-        $expected = 3;
-        $diary->changeMainCategoryId(new CategoryId($expected));
+        $expected = new CategoryId(3);
+        $diary->changeMainCategoryId($expected);
 
-        $this->assertSame($expected, $diary->mainCategoryId());
+        $this->assertSame($expected->value(), $diary->mainCategoryId());
         $this->assertNotNull($diary->updatedAt());
     }
 
@@ -363,28 +289,20 @@ class DiaryTest extends TestCase
      */
     public function サブカテゴリーを変更できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s'),
         );
 
-        $expected = 3;
-        $diary->changeSubCategoryId(new CategoryId($expected));
+        $expected = new CategoryId(3);
+        $diary->changeSubCategoryId($expected);
 
-        $this->assertSame($expected, $diary->subCategoryId());
+        $this->assertSame($expected->value(), $diary->subCategoryId());
         $this->assertNotNull($diary->updatedAt());
     }
 
@@ -394,28 +312,20 @@ class DiaryTest extends TestCase
      */
     public function タイトルを変更できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s'),
         );
 
-        $expected = '変更後タイトル';
-        $diary->changeTitle(new Title($expected));
+        $expected = new Title('変更後タイトル');
+        $diary->changeTitle($expected);
 
-        $this->assertSame($expected, $diary->title());
+        $this->assertSame($expected->value(), $diary->title());
         $this->assertNotNull($diary->updatedAt());
     }
 
@@ -425,28 +335,87 @@ class DiaryTest extends TestCase
      */
     public function 本文を変更できること(): void
     {
-        $id = new Id(1);
-        $userId = new UserId(1);
-        $mainCategoryId = new CategoryId(1);
-        $subCategoryId = new CategoryId(2);
-        $title = new Title('タイトル');
-        $content = new Content('本文');
-        $createdAt = date('Y-m-d H:i:s');
-
         $diary = new Diary(
-            $id,
-            $userId,
-            $mainCategoryId,
-            $subCategoryId,
-            $title,
-            $content,
-            $createdAt
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
         );
 
-        $expected = '変更後本文';
-        $diary->changeContent(new Content($expected));
+        $expected = new Content('変更後本文');
+        $diary->changeContent($expected);
 
-        $this->assertSame($expected, $diary->content());
+        $this->assertSame($expected->value(), $diary->content());
         $this->assertNotNull($diary->updatedAt());
+    }
+
+    /**
+     * equals()
+     * @test
+     */
+    public function 同じDiaryモデルと比較した場合、trueを返すこと(): void
+    {
+        $diary = new Diary(
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
+        );
+
+        $this->assertTrue($diary->equals($diary));
+    }
+
+    /**
+     * equals()
+     * @test
+     */
+    public function 別のDiaryモデルと比較した場合、falseを返すこと(): void
+    {
+        $diary = new Diary(
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
+        );
+
+        $otherDiary = new Diary(
+            new Id(2),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
+        );
+
+        $this->assertFalse($diary->equals($otherDiary));
+    }
+
+    /**
+     * equals()
+     * @test
+     */
+    public function nullと比較した場合、falseを返すこと(): void
+    {
+        $diary = new Diary(
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            date('Y-m-d H:i:s')
+        );
+
+        $this->assertFalse($diary->equals(null));
     }
 }
