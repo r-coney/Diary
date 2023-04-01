@@ -2,6 +2,7 @@
 namespace Domain\DiaryApp\Services;
 
 use Domain\DiaryApp\Models\Diary\Diary;
+use Domain\DiaryApp\Models\Diary\Title;
 use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
 
 class DiaryService
@@ -22,7 +23,10 @@ class DiaryService
      */
     public function exists(Diary $diary): bool
     {
-        $found = $this->diaryRepository->find($diary->id());
+        $found = $this->diaryRepository->findByTitleAndCreatedDate(
+            new Title($diary->title()),
+            $diary->createdDate()
+        );
 
         return $found !== null;
     }

@@ -1,17 +1,26 @@
 <?php
 namespace Domain\DiaryApp\Models\Diary;
 
+use Domain\DiaryApp\Models\Diary\Id;
 use Domain\DiaryApp\Models\Diary\Diary;
 
 interface DiaryRepositoryInterface
 {
     /**
      * idで検索
-     *
-     * @param int $id
-     * @return Diary
+     * @param Id $id
+     * @return Diary|null
      */
-    public function find(int $id): Diary;
+    public function find(Id $id): ?Diary;
+
+    /**
+     * titleと登録日付で検索
+     *
+     * @param Title $title
+     * @param string $date
+     * @return Diary|null
+     */
+    public function findByTitleAndCreatedDate(Title $title, string $date): ?Diary;
 
     /**
      * Diaryエンティティを永続化

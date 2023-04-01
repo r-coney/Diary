@@ -22,7 +22,7 @@ class DiaryRepository implements DiaryRepositoryInterface
         return $this->store();
     }
 
-    public function find(int $id): Diary
+    public function find(int $id): ?Diary
     {
         foreach ($this->store as $index => $entity) {
             if ($id === $index) {
