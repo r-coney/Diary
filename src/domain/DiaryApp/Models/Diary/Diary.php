@@ -1,6 +1,7 @@
 <?php
 namespace Domain\DiaryApp\Models\Diary;
 
+use DateTime;
 use Domain\DiaryApp\Exceptions\Category\InvalidIdException as InvalidCategoryIdException;
 use Domain\DiaryApp\Exceptions\Diary\InvalidIdException;
 use Domain\DiaryApp\Exceptions\Diary\InvalidTitleException;
@@ -20,8 +21,8 @@ class Diary implements Entity
     private ?CategoryId $subCategoryId;
     private Title $title;
     private ?Content $content;
-    private string $createdAt;
-    private ?string $updatedAt;
+    private DateTime $createdAt;
+    private ?DateTime $updatedAt;
 
     public function __construct(
         Id $id,
@@ -30,8 +31,8 @@ class Diary implements Entity
         ?CategoryId $subCategoryId,
         Title $title,
         ?Content $content,
-        string $createdAt,
-        ?string $updatedAt = null
+        DateTime $createdAt,
+        ?DateTime $updatedAt = null
     ) {
         if (is_null($id)) {
             throw new InvalidIdException('Diary IDが存在しません');
@@ -134,7 +135,7 @@ class Diary implements Entity
      */
     public function createdAt(): string
     {
-        return $this->createdAt;
+        return $this->createdAt->format('Y-m-d H:i:s');
     }
 
     /**
@@ -144,7 +145,7 @@ class Diary implements Entity
      */
     public function updatedAt(): string|null
     {
-        return $this->updatedAt;
+        return isset($this->updatedAt) ? $this->updatedAt->format('Y-m-d H:i:s') : null;
     }
 
     /**
@@ -202,7 +203,7 @@ class Diary implements Entity
      */
     private function changeUpdatedAt(): void
     {
-        $this->updatedAt = date("Y-m-d H:i:s");
+        $this->updatedAt = new DateTime(date("Y-m-d H:i:s"));
     }
 
     public function equals(?Entity $other): bool

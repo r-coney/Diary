@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Domain\DiaryApp\Models\Diary;
 
+use DateTime;
 use Tests\TestCase;
 use Domain\DiaryApp\Models\Diary\Id;
 use Domain\DiaryApp\Models\Diary\Diary;
@@ -25,7 +26,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date("Y-m-d H:i:s")
+            new DateTime(date("Y-m-d H:i:s"))
         );
 
         $this->assertInstanceOf(Diary::class, $diary);
@@ -45,7 +46,7 @@ class DiaryTest extends TestCase
             new CategoryId(1),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
     }
 
@@ -64,7 +65,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertSame($expected->value(), $diary->id());
@@ -85,7 +86,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertSame($expected->value(), $diary->userId());
@@ -106,7 +107,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertSame($expected->value(), $diary->mainCategoryId());
@@ -127,7 +128,7 @@ class DiaryTest extends TestCase
             $expected,
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertSame($expected->value(), $diary->subCategoryId());
@@ -148,7 +149,7 @@ class DiaryTest extends TestCase
             $expected,
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertSame($expected, $diary->subCategoryId());
@@ -169,7 +170,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             $expected,
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertSame($expected->value(), $diary->title());
@@ -190,7 +191,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             $expected,
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertSame($expected->value(), $diary->content());
@@ -211,7 +212,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             $expected,
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertSame($expected, $diary->content());
@@ -223,7 +224,7 @@ class DiaryTest extends TestCase
      */
     public function 登録日時を取得できること(): void
     {
-        $expected = date('Y-m-d H:i:s');
+        $expected = new DateTime(date('Y-m-d H:i:s'));
 
         $diary = new Diary(
             new Id(1),
@@ -235,7 +236,7 @@ class DiaryTest extends TestCase
             $expected
         );
 
-        $this->assertSame($expected, $diary->createdAt());
+        $this->assertSame($expected->format('Y-m-d H:i:s'), $diary->createdAt());
     }
 
     /**
@@ -244,7 +245,7 @@ class DiaryTest extends TestCase
      */
     public function 更新日時を取得できること(): void
     {
-        $expected = date('Y-m-d H:i:s');
+        $expected = new DateTime(date('Y-m-d H:i:s'));
 
         $diary = new Diary(
             new Id(1),
@@ -253,11 +254,11 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s'),
+            new DateTime(date('Y-m-d H:i:s')),
             $expected
         );
 
-        $this->assertSame($expected, $diary->updatedAt());
+        $this->assertSame($expected->format('Y-m-d H:i:s'), $diary->updatedAt());
     }
 
     /**
@@ -273,7 +274,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s'),
+            new DateTime(date('Y-m-d H:i:s')),
         );
 
         $expected = new CategoryId(3);
@@ -296,7 +297,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s'),
+            new DateTime(date('Y-m-d H:i:s')),
         );
 
         $expected = new CategoryId(3);
@@ -319,7 +320,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s'),
+            new DateTime(date('Y-m-d H:i:s')),
         );
 
         $expected = new Title('変更後タイトル');
@@ -342,7 +343,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $expected = new Content('変更後本文');
@@ -365,7 +366,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertTrue($diary->equals($diary));
@@ -384,7 +385,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $otherDiary = new Diary(
@@ -394,7 +395,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertFalse($diary->equals($otherDiary));
@@ -413,7 +414,7 @@ class DiaryTest extends TestCase
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            date('Y-m-d H:i:s')
+            new DateTime(date('Y-m-d H:i:s'))
         );
 
         $this->assertFalse($diary->equals(null));
