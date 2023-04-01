@@ -240,6 +240,27 @@ class DiaryTest extends TestCase
     }
 
     /**
+     * createdDate()
+     * @test
+     */
+    public function 登録日付を取得できること(): void
+    {
+        $expected = new DateTime(date('Y-m-d H:i:s'));
+
+        $diary = new Diary(
+            new Id(1),
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            $expected
+        );
+
+        $this->assertSame($expected->format('Y-m-d'), $diary->createdDate());
+    }
+
+    /**
      * updatedAt()
      * @test
      */

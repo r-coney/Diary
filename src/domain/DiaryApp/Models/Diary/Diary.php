@@ -139,6 +139,16 @@ class Diary implements Entity
     }
 
     /**
+     * 登録した日付を取得
+     *
+     * @return string
+     */
+    public function createdDate(): string
+    {
+        return $this->createdAt->format('Y-m-d');
+    }
+
+    /**
      * 更新日時を取得
      *
      * @return string|null
