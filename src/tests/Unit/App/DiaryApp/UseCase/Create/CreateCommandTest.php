@@ -8,16 +8,39 @@ use App\DiaryApp\UseCase\Diary\Create\CreateCommand;
 class CreateCommandTest extends TestCase
 {
     /**
+     * userId()
+     * @test
+     */
+    public function userIdを取得できること(): void
+    {
+        $excepted = 1;
+        $mainCategoryId = 1;
+        $subCategoryId = 2;
+
+        $createCommand = new CreateCommand(
+            $excepted,
+            'タイトル',
+            '本文',
+            $mainCategoryId,
+            $subCategoryId
+        );
+
+        $this->assertSame($excepted, $createCommand->userId());
+    }
+
+    /**
      * title()
      * @test
      */
     public function titleを取得できること(): void
     {
         $excepted = 'タイトル';
+        $userId = 1;
         $mainCategoryId = 1;
         $subCategoryId = 2;
 
         $createCommand = new CreateCommand(
+            $userId,
             $excepted,
             '本文',
             $mainCategoryId,
@@ -34,10 +57,12 @@ class CreateCommandTest extends TestCase
     public function contentを取得できること(): void
     {
         $excepted = '本文';
+        $userId = 1;
         $mainCategoryId = 1;
         $subCategoryId = 2;
 
         $createCommand = new CreateCommand(
+            $userId,
             'タイトル',
             $excepted,
             $mainCategoryId,
@@ -56,9 +81,11 @@ class CreateCommandTest extends TestCase
     public function mainCategoryIdを取得できること(): void
     {
         $excepted = 1;
+        $userId = 1;
         $subCategoryId = 2;
 
         $createCommand = new CreateCommand(
+            $userId,
             'タイトル',
             '本文',
             $excepted,
@@ -77,9 +104,11 @@ class CreateCommandTest extends TestCase
     public function subCategoryIdを取得できること(): void
     {
         $excepted = 2;
+        $userId = 1;
         $mainCategoryId = 1;
 
         $createCommand = new CreateCommand(
+            $userId,
             'タイトル',
             '本文',
             $mainCategoryId,

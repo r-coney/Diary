@@ -4,6 +4,13 @@ namespace App\DiaryApp\UseCase\Diary\Create;
 interface CreateCommandInterface
 {
     /**
+     * userIdを取得
+     *
+     * @return int
+     */
+    public function userId(): int;
+
+    /**
      * 入力されたタイトルを取得
      *
      * @return string
