@@ -5,7 +5,7 @@ use Domain\DiaryApp\Exceptions\DomainException;
 
 class InvalidNameException extends DomainException
 {
-    public function handle(): void
+    public function render(): void
     {
         
     }

@@ -30,5 +30,5 @@ abstract class DomainException extends Exception
      *
      * @return void
      */
-    abstract public function handle(): void;
+    abstract public function render(): void;
 }
