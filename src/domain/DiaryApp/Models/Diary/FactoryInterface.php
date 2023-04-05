@@ -1,6 +1,7 @@
 <?php
 namespace Domain\DiaryApp\Models\Diary;
 
+use DateTime;
 use Domain\DiaryApp\Models\Diary\Id;
 use Domain\DiaryApp\Models\Diary\Diary;
 use Domain\DiaryApp\Models\Diary\Title;
@@ -18,8 +19,8 @@ interface FactoryInterface
      * @param CategoryId|null $subCategoryId
      * @param Title $title
      * @param Content|null $content
-     * @param string $createdAt
-     * @param string|null $updatedAt
+     * @param DateTime $createdAt
+     * @param DateTime|null $updatedAt
      * @param Id|null $id
      * @return Diary
      */
@@ -29,8 +30,8 @@ interface FactoryInterface
         ?CategoryId $subCategoryId,
         Title $title,
         ?Content $content,
-        string $createdAt,
-        ?string $updatedAt = null,
+        DateTime $createdAt,
+        ?DateTime $updatedAt = null,
         Id $id = null,
     ): Diary;
 }

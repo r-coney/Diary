@@ -2,9 +2,12 @@
 
 namespace App\Exceptions\DiaryApp\Diary;
 
-use Exception;
+use App\Exceptions\ApplicationException;
 
-class CanNotCreateDiaryException extends Exception
+class CanNotCreateDiaryException extends ApplicationException
 {
-    //
+    public function render(): void
+    {
+        
+    }
 }
