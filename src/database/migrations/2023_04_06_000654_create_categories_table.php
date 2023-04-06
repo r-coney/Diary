@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('diaries', function (Blueprint $table) {
-            $table->bigInteger('id');
-            $table->integer('user_id');
-            $table->integer('main_category_id');
-            $table->integer('sub_category_id')->nullable();
-            $table->string('title', 255);
-            $table->text('content')->nullable();
+        Schema::table('categories', function (Blueprint $table) {
+            $table->integer('id');
+            $table->string('name', 255);
             $table->timestamp('created_at');
             $table->timestamp('updated_at')->nullable();
         });
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('diaries');
+        Schema::dropIfExists('categories');
     }
 };
