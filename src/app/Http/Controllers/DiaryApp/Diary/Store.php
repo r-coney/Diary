@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\DiaryApp\UseCase\Diary\Create\CreateCommand;
 use App\DiaryApp\UseCase\Diary\Create\CreateInterface;
+use Illuminate\Support\Facades\Auth;
 
 class Store extends Controller
 {
@@ -19,7 +20,7 @@ class Store extends Controller
 
     public function __invoke(Request $request)
     {
-        $userId = 1;
+        $userId = Auth::id();
         $createCommand = new CreateCommand(
             $userId,
             $request->input('title'),

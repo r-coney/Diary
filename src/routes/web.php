@@ -29,3 +29,11 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// DiaryApp
+Route::prefix('/')->name('diaryApp.')->namespace('App\Http\Controllers\DiaryApp')->group(function () {
+    Route::prefix('diary')->name('diary.')->namespace('Diary')->group(function () {
+        Route::get('/create', 'Create')->name('create');
+        Route::post('/', 'Store')->name('store');
+    });
+});
