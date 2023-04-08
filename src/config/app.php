@@ -195,6 +195,12 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+        * DiaryApp
+        */
+        App\Providers\DiaryApp\ApplicationServiceProvider::class,
+        App\Providers\DiaryApp\infrastructureServiceProvider::class,
+        App\Providers\DiaryApp\DomainServiceProvider::class,
     ],
 
     /*

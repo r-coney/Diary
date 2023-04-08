@@ -1,12 +1,14 @@
 <?php
 namespace App\DiaryApp\Infrastructure\InMemory;
 
+use DateTime;
 use Domain\DiaryApp\Models\Diary\Id;
 use Domain\DiaryApp\Models\Diary\Diary;
 use Domain\DiaryApp\Models\Diary\Title;
 use Domain\DiaryApp\Models\Diary\Content;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
+use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
 
 class DiaryRepository implements DiaryRepositoryInterface
 {
@@ -19,13 +21,13 @@ class DiaryRepository implements DiaryRepositoryInterface
      */
     public function store(): array
     {
-        return $this->store();
+        return $this->store;
     }
 
-    public function find(int $id): ?Diary
+    public function find(Id $id): ?Diary
     {
         foreach ($this->store as $index => $entity) {
-            if ($id === $index) {
+            if ($id->value() === $index) {
                 return new Diary(
                     new Id($index),
                     new UserId($entity['userId']),
@@ -35,6 +37,26 @@ class DiaryRepository implements DiaryRepositoryInterface
                     new Content($entity['content']),
                     $entity['createdAt'],
                     $entity['updatedAt']
+                );
+            }
+        }
+
+        return null;
+    }
+
+    public function findByTitleAndCreatedDate(Title $title, string $date): ?Diary
+    {
+        foreach ($this->store as $index => $entity) {
+            if ($title->value() === $entity['title'] && strpos($entity['createdAt'], $date) !== false) {
+                return new Diary(
+                    new Id($index),
+                    new UserId($entity['userId']),
+                    new CategoryId($entity['mainCategoryId']),
+                    new CategoryId($entity['subCategoryId']),
+                    new Title($entity['title']),
+                    new Content($entity['content']),
+                    new DateTime($entity['createdAt']),
+                    isset($entity['updatedAt']) ? new DateTime($entity['updatedAt']) : null
                 );
             }
         }

@@ -16,3 +16,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::prefix('/diaries')->name('diaryApp.')->namespace('App\Http\Controllers\DiaryApp')->group(function () {
+    Route::name('diary.')->namespace('Diary')->group(function () {
+        Route::get('/create', 'Create')->name('create');
+        Route::post('/', 'Store')->name('store');
+    });
+});

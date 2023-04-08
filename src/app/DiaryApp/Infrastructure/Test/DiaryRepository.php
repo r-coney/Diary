@@ -21,7 +21,7 @@ class DiaryRepository implements DiaryRepositoryInterface
      */
     public function store(): array
     {
-        return $this->store();
+        return $this->store;
     }
 
     public function refreshStore(): void

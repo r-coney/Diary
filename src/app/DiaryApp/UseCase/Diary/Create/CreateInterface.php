@@ -1,9 +1,9 @@
 <?php
 namespace App\DiaryApp\UseCase\Diary\Create;
 
-use App\DiaryApp\UseCase\Diary\Create\CreateCommand;
+use App\DiaryApp\UseCase\Diary\Create\CreateCommandInterface;
 
 interface CreateInterface
 {
-    public function __invoke(CreateCommand $createCommand): void;
+    public function __invoke(CreateCommandInterface $createCommand): void;
 }
