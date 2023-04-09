@@ -9,10 +9,17 @@ use Domain\DiaryApp\Models\Diary\Content;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
 use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
+use Illuminate\Support\Facades\Cache;
+use stdClass;
 
 class DiaryRepository implements DiaryRepositoryInterface
 {
-    private array $store = [];
+    private array $store;
+
+    public function __construct()
+    {
+        $this->store = Cache::get('diary', []);
+    }
 
     /**
      * 永続化されたDiary配列を取得
@@ -21,22 +28,24 @@ class DiaryRepository implements DiaryRepositoryInterface
      */
     public function store(): array
     {
+        $this->store = Cache::get('diary', []);
+
         return $this->store;
     }
 
     public function find(Id $id): ?Diary
     {
-        foreach ($this->store as $index => $entity) {
-            if ($id->value() === $index) {
+        foreach ($this->store() as $entity) {
+            if ($id->value() === $entity->id) {
                 return new Diary(
-                    new Id($index),
-                    new UserId($entity['userId']),
-                    new CategoryId($entity['mainCategoryId']),
-                    new CategoryId($entity['subCategoryId']),
-                    new Title($entity['title']),
-                    new Content($entity['content']),
-                    $entity['createdAt'],
-                    $entity['updatedAt']
+                    new Id($entity->id),
+                    new UserId($entity->userId),
+                    new CategoryId($entity->mainCategoryId),
+                    new CategoryId($entity->subCategoryId),
+                    new Title($entity->title),
+                    new Content($entity->content),
+                    new DateTime($entity->createdAt),
+                    isset($entity->updatedAt) ? new DateTime($entity->updatedAt) : null
                 );
             }
         }
@@ -46,17 +55,17 @@ class DiaryRepository implements DiaryRepositoryInterface
 
     public function findByTitleAndCreatedDate(Title $title, string $date): ?Diary
     {
-        foreach ($this->store as $index => $entity) {
-            if ($title->value() === $entity['title'] && strpos($entity['createdAt'], $date) !== false) {
+        foreach ($this->store() as $entity) {
+            if ($title->value() === $entity->title && strpos($entity->createdAt, $date) !== false) {
                 return new Diary(
-                    new Id($index),
-                    new UserId($entity['userId']),
-                    new CategoryId($entity['mainCategoryId']),
-                    new CategoryId($entity['subCategoryId']),
-                    new Title($entity['title']),
-                    new Content($entity['content']),
-                    new DateTime($entity['createdAt']),
-                    isset($entity['updatedAt']) ? new DateTime($entity['updatedAt']) : null
+                    new Id($entity->id),
+                    new UserId($entity->userId),
+                    new CategoryId($entity->mainCategoryId),
+                    new CategoryId($entity->subCategoryId),
+                    new Title($entity->title),
+                    new Content($entity->content),
+                    new DateTime($entity->createdAt),
+                    isset($entity->updatedAt) ? new DateTime($entity->updatedAt) : null
                 );
             }
         }
@@ -66,14 +75,18 @@ class DiaryRepository implements DiaryRepositoryInterface
 
     public function save(Diary $diary): void
     {
-        $this->store[$diary->id()] = [
-            'userId' => $diary->userId(),
-            'mainCategoryId' => $diary->mainCategoryId(),
-            'subCategoryId' => $diary->subCategoryId(),
-            'title' => $diary->title(),
-            'content' => $diary->content(),
-            'createdAt' => $diary->createdAt(),
-            'updatedAt' => $diary->updatedAt()
-        ];
+        $diaryData = new stdClass();
+        $diaryData->id = $diary->id();
+        $diaryData->userId = $diary->userId();
+        $diaryData->mainCategoryId = $diary->mainCategoryId();
+        $diaryData->subCategoryId = $diary->subCategoryId();
+        $diaryData->title = $diary->title();
+        $diaryData->content = $diary->content();
+        $diaryData->createdAt = $diary->createdAt();
+        $diaryData->updatedAt = $diary->updatedAt();
+
+        $store = $this->store();
+        $store[] = $diaryData;
+        Cache::put('diary', $store);
     }
 }
