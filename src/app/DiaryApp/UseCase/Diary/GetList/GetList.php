@@ -3,6 +3,8 @@ namespace App\DiaryApp\UseCase\Diary\GetList;
 
 use App\DiaryApp\UseCase\Diary\QueryServiceInterface;
 use App\DiaryApp\UseCase\Diary\GetList\GetListInterface;
+use App\DiaryApp\UseCase\Diary\GetList\DiaryListQueryData;
+use App\DiaryApp\UseCase\Diary\GetList\GetListCommandInterface;
 
 class GetList implements GetListInterface
 {
@@ -13,12 +15,8 @@ class GetList implements GetListInterface
         $this->queryService = $queryService;
     }
 
-    public function __invoke(GetListCommandInterface $command): array
+    public function __invoke(GetListCommandInterface $command): DiaryListQueryData
     {
-        // $diaryList = $this->queryService->getAll($command);
-
-        // return $diaryList;
-
-        return [];
+        return $this->queryService->getAll($command);
     }
 }
