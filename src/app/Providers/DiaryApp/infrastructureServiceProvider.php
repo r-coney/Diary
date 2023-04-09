@@ -2,7 +2,7 @@
 
 namespace App\Providers\DiaryApp;
 
-use App\DiaryApp\Infrastructure\InMemory\DiaryRepository as InMemoryDiaryRepository;
+use App\DiaryApp\Infrastructure\InMemory\Repositories\DiaryRepository as InMemoryDiaryRepository;
 use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 

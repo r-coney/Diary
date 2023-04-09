@@ -6,7 +6,7 @@ use DateTime;
 use Tests\TestCase;
 use App\DiaryApp\UseCase\Diary\Create\Create;
 use App\DiaryApp\UseCase\Diary\Create\CreateCommand;
-use App\DiaryApp\Infrastructure\Test\DiaryRepository;
+use App\DiaryApp\Infrastructure\Test\Repositories\DiaryRepository;
 use App\Exceptions\DiaryApp\Diary\CanNotCreateDiaryException;
 use Domain\DiaryApp\Models\Diary\Title;
 use Domain\DiaryApp\Models\Diary\Content;

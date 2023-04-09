@@ -1,5 +1,5 @@
 <?php
-namespace App\DiaryApp\Infrastructure\InMemory;
+namespace App\DiaryApp\Infrastructure\InMemory\Repositories;
 
 use DateTime;
 use Domain\DiaryApp\Models\Diary\Id;

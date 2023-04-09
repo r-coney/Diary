@@ -10,7 +10,7 @@ use Domain\DiaryApp\Models\Diary\Title;
 use Domain\DiaryApp\Models\Diary\Content;
 use Domain\DiaryApp\Services\DiaryService;
 use Domain\DiaryApp\Models\User\Id as UserId;
-use App\DiaryApp\Infrastructure\Test\DiaryRepository;
+use App\DiaryApp\Infrastructure\Test\Repositories\DiaryRepository;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
 
 class DiaryServiceTest extends TestCase
