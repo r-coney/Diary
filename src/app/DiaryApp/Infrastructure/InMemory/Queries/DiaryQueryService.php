@@ -1,14 +1,23 @@
 <?php
 namespace App\DiaryApp\Infrastructure\InMemory\Queries;
 
-use Illuminate\Database\Eloquent\Collection;
+use App\DiaryApp\UseCase\Diary\GetList\DiaryListQueryData;
 use App\DiaryApp\UseCase\Diary\QueryServiceInterface;
 use App\DiaryApp\UseCase\Diary\GetList\GetListCommandInterface;
+use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
 
 class DiaryQueryService implements QueryServiceInterface
 {
-    public function getAll(GetListCommandInterface $command): Collection
+    private DiaryRepositoryInterface $diaryRepository;
+
+    public function __construct(
+        DiaryRepositoryInterface $diaryRepository,
+    ) {
+        $this->diaryRepository = $diaryRepository;
+    }
+
+    public function getAll(GetListCommandInterface $command): DiaryListQueryData
     {
-        return collect();
+        return new DiaryListQueryData($this->diaryRepository->store());
     }
 }
