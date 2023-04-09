@@ -1,4 +1,5 @@
 <?php
+namespace App\DiaryApp\UseCase\Diary;
 
 use Illuminate\Database\Eloquent\Collection;
 
