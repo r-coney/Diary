@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\App\DiaryApp\UseCase\Create;
+namespace Tests\Unit\App\DiaryApp\UseCase\Diary\Create;
 
 use DateTime;
 use Tests\TestCase;
