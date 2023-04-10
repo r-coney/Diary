@@ -2,11 +2,13 @@
 
 namespace App\Providers\DiaryApp;
 
+use Illuminate\Support\ServiceProvider;
+use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
+use Domain\DiaryApp\Models\Category\CategoryRepositoryInterface;
 use App\DiaryApp\UseCase\Diary\QueryServiceInterface as DiaryQueryServiceInterface;
 use App\DiaryApp\Infrastructure\InMemory\Queries\DiaryQueryService as InMemoryDiaryQueryService;
 use App\DiaryApp\Infrastructure\InMemory\Repositories\DiaryRepository as InMemoryDiaryRepository;
-use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
-use Illuminate\Support\ServiceProvider;
+use App\DiaryApp\Infrastructure\InMemory\Repositories\CategoryRepository as InMemoryCategoryRepository;
 
 class infrastructureServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,7 @@ class infrastructureServiceProvider extends ServiceProvider
     {
         $this->app->singleton(DiaryRepositoryInterface::class, InMemoryDiaryRepository::class);
         $this->app->singleton(DiaryQueryServiceInterface::class, InMemoryDiaryQueryService::class);
+        $this->app->singleton(CategoryRepositoryInterface::class, InMemoryCategoryRepository::class);
     }
 
     /**
