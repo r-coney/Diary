@@ -15,7 +15,7 @@ use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
 use Domain\DiaryApp\Models\Diary\InMemoryFactory as DiaryFactory;
 use Domain\DiaryApp\Models\Diary\FactoryInterface as DiaryFactoryInterface;
-use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
+use Domain\DiaryApp\Models\Diary\RepositoryInterface as DiaryRepositoryInterface;
 
 class CreateTest extends TestCase
 {

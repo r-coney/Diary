@@ -4,7 +4,7 @@ namespace App\DiaryApp\Infrastructure\InMemory\Queries;
 use App\DiaryApp\UseCase\Diary\GetList\DiaryListQueryData;
 use App\DiaryApp\UseCase\Diary\QueryServiceInterface;
 use App\DiaryApp\UseCase\Diary\GetList\GetListCommandInterface;
-use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
+use Domain\DiaryApp\Models\Diary\RepositoryInterface as DiaryRepositoryInterface;
 
 class DiaryQueryService implements QueryServiceInterface
 {

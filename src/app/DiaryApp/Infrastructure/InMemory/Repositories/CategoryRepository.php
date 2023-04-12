@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Cache;
 use Domain\DiaryApp\Models\Category\Id;
 use Domain\DiaryApp\Models\Category\Name;
 use Domain\DiaryApp\Models\Category\Category;
-use Domain\DiaryApp\Models\Category\CategoryRepositoryInterface;
+use Domain\DiaryApp\Models\Category\RepositoryInterface as CategoryRepositoryInterface;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
