@@ -8,7 +8,7 @@ use Domain\DiaryApp\Models\Diary\Title;
 use Domain\DiaryApp\Models\Diary\Content;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
-use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
+use Domain\DiaryApp\Models\Diary\RepositoryInterface as DiaryRepositoryInterface;
 use Domain\DiaryApp\Models\Diary\FactoryInterface as DiaryFactoryInterface;
 
 class DiaryRepository implements DiaryRepositoryInterface

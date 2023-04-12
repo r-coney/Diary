@@ -4,7 +4,7 @@ namespace Domain\DiaryApp\Models\Diary;
 use Domain\DiaryApp\Models\Diary\Id;
 use Domain\DiaryApp\Models\Diary\Diary;
 
-interface DiaryRepositoryInterface
+interface RepositoryInterface
 {
     /**
      * idで検索
