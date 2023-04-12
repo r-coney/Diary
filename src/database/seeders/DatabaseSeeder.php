@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\InMemory\CacheSeeder;
 use Illuminate\Database\Seeder;
-use Database\Seeders\InMemory\CategoriesSeeder as InMemoryCategoriesSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,7 +13,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            InMemoryCategoriesSeeder::class,
+            CacheSeeder::class,
         ]);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Domain\DiaryApp\Models\Category;
 
+use DateTime;
 use Domain\DiaryApp\Models\Category\Id;
 use Domain\DiaryApp\Models\Category\Name;
 use Domain\DiaryApp\Models\Entity;
@@ -9,14 +10,14 @@ class Category implements Entity
 {
     private Id $id;
     private Name $name;
-    private string $createdAt;
-    private ?string $updatedAt;
+    private DateTime $createdAt;
+    private ?DateTime $updatedAt;
 
     public function __construct(
         Id $id,
         Name $name,
-        string $createdAt,
-        ?string $updatedAt = null
+        DateTime $createdAt,
+        ?DateTime $updatedAt = null
     ) {
         if (is_null($id)) {
             throw new InvalidIdException('Category IDが存在しません');
@@ -63,7 +64,7 @@ class Category implements Entity
      */
     public function createdAt(): string
     {
-        return $this->createdAt;
+        return $this->createdAt->format('Y-m-d H:i:s');
     }
 
     /**
@@ -71,9 +72,9 @@ class Category implements Entity
      *
      * @return string
      */
-    public function updatedAt(): string
+    public function updatedAt(): string|null
     {
-        return $this->updatedAt;
+        return isset($this->updatedAt) ? $this->updatedAt->format('Y-m-d H:i:s') : null;
     }
 
     /**
@@ -95,7 +96,7 @@ class Category implements Entity
      */
     private function changeUpdatedAt(): void
     {
-        $this->updatedAt = date("Y-m-d H:i:s");
+        $this->updatedAt = new DateTime();
     }
 
     public function equals(?Entity $other): bool
@@ -108,6 +109,6 @@ class Category implements Entity
             return true;
         }
 
-        return $this->id === $other->id();
+        return $this->id() === $other->id();
     }
 }

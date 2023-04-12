@@ -9,10 +9,18 @@ use Domain\DiaryApp\Models\Diary\Content;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
 use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
+use Domain\DiaryApp\Models\Diary\FactoryInterface as DiaryFactoryInterface;
 
 class DiaryRepository implements DiaryRepositoryInterface
 {
+    private DiaryFactoryInterface $dairyFactory;
     private array $store = [];
+
+    public function __construct(
+        DiaryFactoryInterface $dairyFactory
+    ) {
+        $this->dairyFactory = $dairyFactory;
+    }
 
     /**
      * 永続化されたDiary配列を取得
@@ -31,17 +39,17 @@ class DiaryRepository implements DiaryRepositoryInterface
 
     public function find(Id $id): ?Diary
     {
-        foreach ($this->store as $index => $entity) {
-            if ($id->value() === $index) {
-                return new Diary(
-                    new Id($index),
-                    new UserId($entity['userId']),
-                    new CategoryId($entity['mainCategoryId']),
-                    new CategoryId($entity['subCategoryId']),
-                    new Title($entity['title']),
-                    new Content($entity['content']),
-                    new DateTime($entity['createdAt']),
-                    isset($entity['updatedAt']) ? new DateTime($entity['updatedAt']) : null
+        foreach ($this->store as $entity) {
+            if ($id->value() === $entity->id) {
+                return $this->dairyFactory->create(
+                    new UserId($entity->userId),
+                    new CategoryId($entity->mainCategoryId),
+                    new CategoryId($entity->subCategoryId),
+                    new Title($entity->title),
+                    new Content($entity->content),
+                    new DateTime($entity->createdAt),
+                    isset($entity->updatedAt) ? new DateTime($entity->updatedAt) : null,
+                    new Id($entity->id),
                 );
             }
         }
@@ -52,16 +60,16 @@ class DiaryRepository implements DiaryRepositoryInterface
     public function findByTitleAndCreatedDate(Title $title, string $date): ?Diary
     {
         foreach ($this->store as $index => $entity) {
-            if ($title->value() === $entity['title'] && strpos($entity['createdAt'], $date) !== false) {
-                return new Diary(
+            if ($title->value() === $entity->title && strpos($entity->createdAt, $date) !== false) {
+                return $this->dairyFactory->create(
+                    new UserId($entity->userId),
+                    new CategoryId($entity->mainCategoryId),
+                    new CategoryId($entity->subCategoryId),
+                    new Title($entity->title),
+                    new Content($entity->content),
+                    new DateTime($entity->createdAt),
+                    isset($entity->updatedAt) ? new DateTime($entity->updatedAt) : null,
                     new Id($index),
-                    new UserId($entity['userId']),
-                    new CategoryId($entity['mainCategoryId']),
-                    new CategoryId($entity['subCategoryId']),
-                    new Title($entity['title']),
-                    new Content($entity['content']),
-                    new DateTime($entity['createdAt']),
-                    isset($entity['updatedAt']) ? new DateTime($entity['updatedAt']) : null
                 );
             }
         }
@@ -71,7 +79,7 @@ class DiaryRepository implements DiaryRepositoryInterface
 
     public function save(Diary $diary): void
     {
-        $this->store[$diary->id()] = [
+        $this->store[] = (object) [
             'userId' => $diary->userId(),
             'mainCategoryId' => $diary->mainCategoryId(),
             'subCategoryId' => $diary->subCategoryId(),

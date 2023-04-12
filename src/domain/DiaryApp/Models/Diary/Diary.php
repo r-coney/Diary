@@ -2,23 +2,23 @@
 namespace Domain\DiaryApp\Models\Diary;
 
 use DateTime;
-use Domain\DiaryApp\Exceptions\Category\InvalidIdException as InvalidCategoryIdException;
-use Domain\DiaryApp\Exceptions\Diary\InvalidIdException;
-use Domain\DiaryApp\Exceptions\Diary\InvalidTitleException;
-use Domain\DiaryApp\Exceptions\User\InvalidIdException as InvalidUserIdException;
+use InvalidArgumentException;
+use Domain\DiaryApp\Models\Entity;
 use Domain\DiaryApp\Models\Diary\Id;
 use Domain\DiaryApp\Models\Diary\Title;
 use Domain\DiaryApp\Models\Diary\Content;
+use Domain\DiaryApp\Models\Category\Category;
 use Domain\DiaryApp\Models\User\Id as UserId;
-use Domain\DiaryApp\Models\Category\Id as CategoryId;
-use Domain\DiaryApp\Models\Entity;
+use Domain\DiaryApp\Exceptions\Diary\InvalidIdException;
+use Domain\DiaryApp\Exceptions\Diary\InvalidTitleException;
+use Domain\DiaryApp\Exceptions\User\InvalidIdException as InvalidUserIdException;
 
 class Diary implements Entity
 {
     private Id $id;
     private UserId $userId;
-    private CategoryId $mainCategoryId;
-    private ?CategoryId $subCategoryId;
+    private Category $mainCategory;
+    private ?Category $subCategory;
     private Title $title;
     private ?Content $content;
     private DateTime $createdAt;
@@ -27,8 +27,8 @@ class Diary implements Entity
     public function __construct(
         Id $id,
         UserId $userId,
-        CategoryId $mainCategoryId,
-        ?CategoryId $subCategoryId,
+        Category $mainCategory,
+        ?Category $subCategory,
         Title $title,
         ?Content $content,
         DateTime $createdAt,
@@ -42,12 +42,12 @@ class Diary implements Entity
             throw new InvalidUserIdException('User IDが存在しません');
         }
 
-        if (is_null($mainCategoryId)) {
-            throw new InvalidCategoryIdException('Main Category IDが存在しません');
+        if (is_null($mainCategory)) {
+            throw new InvalidArgumentException('Main Category が存在しません');
         }
 
-        if ($mainCategoryId->equals($subCategoryId)) {
-            throw new InvalidCategoryIdException('CategoryはMainとSubで同一のものは指定できません');
+        if ($mainCategory->equals($subCategory)) {
+            throw new InvalidArgumentException('CategoryはMainとSubで同一のものは指定できません');
         }
 
         if (is_null($title)) {
@@ -60,8 +60,8 @@ class Diary implements Entity
 
         $this->id = $id;
         $this->userId = $userId;
-        $this->mainCategoryId = $mainCategoryId;
-        $this->subCategoryId = $subCategoryId;
+        $this->mainCategory = $mainCategory;
+        $this->subCategory = $subCategory;
         $this->title = $title;
         $this->content = $content;
         $this->createdAt = $createdAt;
@@ -95,7 +95,17 @@ class Diary implements Entity
      */
     public function mainCategoryId(): int
     {
-        return $this->mainCategoryId->value();
+        return $this->mainCategory->Id();
+    }
+
+    /**
+     * メインカテゴリー名を取得
+     *
+     * @return string
+     */
+    public function mainCategoryName(): string
+    {
+        return $this->mainCategory->name();
     }
 
     /**
@@ -105,7 +115,17 @@ class Diary implements Entity
      */
     public function subCategoryId(): int|null
     {
-        return $this->subCategoryId ? $this->subCategoryId->value() : null;
+        return $this->subCategory ? $this->subCategory->Id() : null;
+    }
+
+    /**
+     * サブカテゴリー名を取得
+     *
+     * @return integer|null
+     */
+    public function subCategoryName(): int|null
+    {
+        return $this->subCategory ? $this->subCategory->name() : null;
     }
 
     /**
@@ -161,24 +181,24 @@ class Diary implements Entity
     /**
      * メインカテゴリーIDを変更
      *
-     * @param CategoryId $mainCategoryId
+     * @param Category $mainCategory
      * @return void
      */
-    public function changeMainCategoryId(CategoryId $mainCategoryId): void
+    public function changeMainCategory(Category $mainCategory): void
     {
-        $this->mainCategoryId = $mainCategoryId;
+        $this->mainCategory = $mainCategory;
         $this->changeUpdatedAt();
     }
 
     /**
      * サブカテゴリーIDを変更
      *
-     * @param CategoryId|null $mainCategoryId
+     * @param Category|null $mainCategory
      * @return void
      */
-    public function changeSubCategoryId(?CategoryId $subCategoryId): void
+    public function changeSubCategory(?Category $subCategory): void
     {
-        $this->subCategoryId = $subCategoryId;
+        $this->subCategory = $subCategory;
         $this->changeUpdatedAt();
     }
 
@@ -226,6 +246,6 @@ class Diary implements Entity
             return true;
         }
 
-        return $this->id === $other->id();
+        return $this->id() === $other->id();
     }
 }
