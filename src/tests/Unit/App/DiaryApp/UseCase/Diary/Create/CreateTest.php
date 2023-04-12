@@ -14,9 +14,23 @@ use Domain\DiaryApp\Services\DiaryService;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
 use Domain\DiaryApp\Models\Diary\InMemoryFactory as DiaryFactory;
+use Domain\DiaryApp\Models\Diary\FactoryInterface as DiaryFactoryInterface;
+use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
 
 class CreateTest extends TestCase
 {
+    private DiaryFactoryInterface $diaryFactory;
+    private DiaryRepositoryInterface $diaryRepository;
+    private DiaryService $diaryService;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->diaryFactory = new DiaryFactory();
+        $this->diaryRepository = new DiaryRepository($this->diaryFactory);
+        $this->diaryService = new DiaryService($this->diaryRepository);
+    }
+
     /**
      * @test
      */
@@ -33,15 +47,12 @@ class CreateTest extends TestCase
             $subCategoryId
         );
 
-        $diaryFactory = new DiaryFactory();
-        $diaryRepository = new DiaryRepository();
-        $diaryService = new DiaryService($diaryRepository);
-        $createDiary = new Create($diaryFactory, $diaryService, $diaryRepository);
+        $createDiary = new Create($this->diaryFactory, $this->diaryService, $this->diaryRepository);
 
         $createDiary($createCommand);
 
         $currentDateTime = new DateTime();
-        $createdDiary = $diaryRepository->findByTitleAndCreatedDate(
+        $createdDiary = $this->diaryRepository->findByTitleAndCreatedDate(
             new Title($createCommand->title()),
             $currentDateTime->format('Y-m-d')
         );
@@ -65,8 +76,7 @@ class CreateTest extends TestCase
         $mainCategoryId = 1;
         $subCategoryId = 2;
 
-        $diaryFactory = new DiaryFactory();
-        $diaryOfExistence = $diaryFactory->create(
+        $diaryOfExistence = $this->diaryFactory->create(
             new UserId($userId),
             new CategoryId($mainCategoryId),
             new CategoryId($subCategoryId),
@@ -74,8 +84,8 @@ class CreateTest extends TestCase
             new Content($content),
             new DateTime(),
         );
-        $diaryRepository = new DiaryRepository();
-        $diaryRepository->save($diaryOfExistence);
+
+        $this->diaryRepository->save($diaryOfExistence);
 
         $createCommand = new CreateCommand(
             $userId,
@@ -84,8 +94,8 @@ class CreateTest extends TestCase
             $mainCategoryId,
             $subCategoryId
         );
-        $diaryService = new DiaryService($diaryRepository);
-        $createDiary = new Create($diaryFactory, $diaryService, $diaryRepository);
+
+        $createDiary = new Create($this->diaryFactory, $this->diaryService, $this->diaryRepository);
 
         $createDiary($createCommand);
     }

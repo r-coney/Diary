@@ -10,15 +10,19 @@ use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
 use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
 use Illuminate\Support\Facades\Cache;
+use Domain\DiaryApp\Models\Diary\FactoryInterface as DiaryFactoryInterface;
 use stdClass;
 
 class DiaryRepository implements DiaryRepositoryInterface
 {
+    private DiaryFactoryInterface $dairyFactory;
     private array $store;
 
-    public function __construct()
-    {
-        $this->store = Cache::get('diary', []);
+    public function __construct(
+        DiaryFactoryInterface $dairyFactory
+    ) {
+        $this->dairyFactory = $dairyFactory;
+        $this->store = Cache::get('diaries', []);
     }
 
     /**
@@ -28,7 +32,7 @@ class DiaryRepository implements DiaryRepositoryInterface
      */
     public function store(): array
     {
-        $this->store = Cache::get('diary', []);
+        $this->store = Cache::get('diaries', []);
 
         return $this->store;
     }
@@ -37,15 +41,15 @@ class DiaryRepository implements DiaryRepositoryInterface
     {
         foreach ($this->store() as $entity) {
             if ($id->value() === $entity->id) {
-                return new Diary(
-                    new Id($entity->id),
+                return $this->dairyFactory->create(
                     new UserId($entity->userId),
                     new CategoryId($entity->mainCategoryId),
                     new CategoryId($entity->subCategoryId),
                     new Title($entity->title),
                     new Content($entity->content),
                     new DateTime($entity->createdAt),
-                    isset($entity->updatedAt) ? new DateTime($entity->updatedAt) : null
+                    isset($entity->updatedAt) ? new DateTime($entity->updatedAt) : null,
+                    new Id($entity->id),
                 );
             }
         }
@@ -57,15 +61,15 @@ class DiaryRepository implements DiaryRepositoryInterface
     {
         foreach ($this->store() as $entity) {
             if ($title->value() === $entity->title && strpos($entity->createdAt, $date) !== false) {
-                return new Diary(
-                    new Id($entity->id),
+                return $this->dairyFactory->create(
                     new UserId($entity->userId),
                     new CategoryId($entity->mainCategoryId),
                     new CategoryId($entity->subCategoryId),
                     new Title($entity->title),
                     new Content($entity->content),
                     new DateTime($entity->createdAt),
-                    isset($entity->updatedAt) ? new DateTime($entity->updatedAt) : null
+                    isset($entity->updatedAt) ? new DateTime($entity->updatedAt) : null,
+                    new Id($entity->id),
                 );
             }
         }
@@ -87,6 +91,6 @@ class DiaryRepository implements DiaryRepositoryInterface
 
         $store = $this->store();
         $store[] = $diaryData;
-        Cache::put('diary', $store);
+        Cache::put('diaries', $store);
     }
 }

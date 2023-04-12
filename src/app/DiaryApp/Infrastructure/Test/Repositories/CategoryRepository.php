@@ -1,5 +1,5 @@
 <?php
-namespace App\DiaryApp\Infrastructure\InMemory\Repositories;
+namespace App\DiaryApp\Infrastructure\Test\Repositories;
 
 use DateTime;
 use Domain\DiaryApp\Models\Category\Id;
@@ -9,15 +9,36 @@ use Domain\DiaryApp\Models\Category\CategoryRepositoryInterface;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
+    private array $store;
+
+    public function __construct()
+    {
+        $this->store = [
+            (object) [
+                'id' => 1,
+                'name' => 'work',
+                'createdAt' => '2021-01-01 00:00:00',
+            ],
+            (object) [
+                'id' => 2,
+                'name' => 'study',
+                'createdAt' => '2021-01-01 00:00:00',
+            ],
+            (object) [
+                'id' => 3,
+                'name' => 'life',
+                'createdAt' => '2021-01-01 00:00:00',
+            ],
+        ];
+    }
+
     /**
-     * 永続化されたDiary配列を取得
+     * 永続化されたCategory配列を取得
      *
      * @return array
      */
     public function store(): array
     {
-        $this->store = Cache::get('categories', []);
-
         return $this->store;
     }
 

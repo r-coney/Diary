@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Domain\DiaryApp\Models\Category;
 
+use DateTime;
 use Tests\TestCase;
 use Domain\DiaryApp\Models\Category\Id;
 use Domain\DiaryApp\Models\Category\Name;
@@ -17,7 +18,7 @@ class CategoryTest extends TestCase
         $category = new Category(
             new Id(1),
             new Name('名前'),
-            date("Y-m-d H:i:s")
+            new DateTime()
         );
 
         $this->assertInstanceOf(Category::class, $category);
@@ -34,7 +35,7 @@ class CategoryTest extends TestCase
         $category = new Category(
             new Id(1),
             new Name('名前'),
-            date('Y-m-d H:i:s')
+            new DateTime()
         );
 
         $this->assertSame($expected->value(), $category->id());
@@ -51,7 +52,7 @@ class CategoryTest extends TestCase
         $category = new Category(
             new Id(1),
             $expected,
-            date('Y-m-d H:i:s')
+            new DateTime()
         );
 
         $this->assertSame($expected->value(), $category->name());
@@ -63,7 +64,7 @@ class CategoryTest extends TestCase
      */
     public function 登録日時を取得できること(): void
     {
-        $expected = date('Y-m-d H:i:s');
+        $expected = new DateTime();
 
         $category = new Category(
             new Id(1),
@@ -71,7 +72,7 @@ class CategoryTest extends TestCase
             $expected
         );
 
-        $this->assertSame($expected, $category->createdAt());
+        $this->assertSame($expected->format('Y-m-d H:i:s'), $category->createdAt());
     }
 
     /**
@@ -80,16 +81,16 @@ class CategoryTest extends TestCase
      */
     public function 更新日時を取得できること(): void
     {
-        $expected = date('Y-m-d H:i:s');
+        $expected = new DateTime();
 
         $category = new Category(
             new Id(1),
             new Name('名前'),
-            date('Y-m-d H:i:s'),
+            new DateTime(),
             $expected
         );
 
-        $this->assertSame($expected, $category->updatedAt());
+        $this->assertSame($expected->format('Y-m-d H:i:s'), $category->updatedAt());
     }
 
     /**
@@ -101,7 +102,7 @@ class CategoryTest extends TestCase
         $category = new Category(
             new Id(1),
             new Name('名前'),
-            date('Y-m-d H:i:s')
+            new DateTime()
         );
 
         $expected = new Name('変更後の名前');
@@ -120,7 +121,7 @@ class CategoryTest extends TestCase
         $category = new Category(
             new Id(1),
             new Name('名前'),
-            date('Y-m-d H:i:s')
+            new DateTime()
         );
 
         $this->assertTrue($category->equals($category));
@@ -135,13 +136,13 @@ class CategoryTest extends TestCase
         $category = new Category(
             new Id(1),
             new Name('名前'),
-            date('Y-m-d H:i:s')
+            new DateTime()
         );
 
         $otherCategory = new Category(
             new Id(2),
             new Name('別の名前'),
-            date('Y-m-d H:i:s')
+            new DateTime()
         );
 
         $this->assertFalse($category->equals($otherCategory));
@@ -156,7 +157,7 @@ class CategoryTest extends TestCase
         $category = new Category(
             new Id(1),
             new Name('名前'),
-            date('Y-m-d H:i:s')
+            new DateTime()
         );
 
         $this->assertFalse($category->equals(null));
