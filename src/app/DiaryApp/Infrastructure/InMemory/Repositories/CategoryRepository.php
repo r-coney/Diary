@@ -2,6 +2,7 @@
 namespace App\DiaryApp\Infrastructure\InMemory\Repositories;
 
 use DateTime;
+use Illuminate\Support\Facades\Cache;
 use Domain\DiaryApp\Models\Category\Id;
 use Domain\DiaryApp\Models\Category\Name;
 use Domain\DiaryApp\Models\Category\Category;
