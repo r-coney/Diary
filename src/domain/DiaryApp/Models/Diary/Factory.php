@@ -11,7 +11,7 @@ use Domain\DiaryApp\Models\Category\Category;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Diary\FactoryInterface;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
-use Domain\DiaryApp\Models\Category\CategoryRepositoryInterface;
+use Domain\DiaryApp\Models\Category\RepositoryInterface as CategoryRepositoryInterface;
 
 class Factory implements FactoryInterface
 {
