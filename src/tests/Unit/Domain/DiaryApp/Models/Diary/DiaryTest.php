@@ -103,7 +103,7 @@ class DiaryTest extends TestCase
      * mainCategoryId()
      * @test
      */
-    public function メインカテゴリーを取得できること(): void
+    public function メインカテゴリーのIDを取得できること(): void
     {
         $expected = new CategoryId(1);
 
@@ -120,10 +120,28 @@ class DiaryTest extends TestCase
     }
 
     /**
+     * mainCategoryName()
+     * @test
+     */
+    public function メインカテゴリーの名前を取得できること(): void
+    {
+        $diary = $this->diaryFactory->create(
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            new DateTime()
+        );
+
+        $this->assertIsString($diary->mainCategoryName());
+    }
+
+    /**
      * subCategoryId()
      * @test
      */
-    public function サブカテゴリーを取得できること(): void
+    public function サブカテゴリーのIDを取得できること(): void
     {
         $expected = new CategoryId(2);
 
@@ -157,6 +175,44 @@ class DiaryTest extends TestCase
         );
 
         $this->assertSame($expected, $diary->subCategoryId());
+    }
+
+    /**
+     * subCategoryName()
+     * @test
+     */
+    public function サブカテゴリーの名前を取得できること(): void
+    {
+        $diary = $this->diaryFactory->create(
+            new UserId(1),
+            new CategoryId(1),
+            new CategoryId(2),
+            new Title('タイトル'),
+            new Content('本文'),
+            new DateTime()
+        );
+
+        $this->assertIsString($diary->subCategoryName());
+    }
+
+    /**
+     * subCategoryName()
+     * @test
+     */
+    public function サブカテゴリーが設定されていない場合、サブカテゴリー名にnullを取得できること(): void
+    {
+        $expected = null;
+
+        $diary = $this->diaryFactory->create(
+            new UserId(1),
+            new CategoryId(1),
+            null,
+            new Title('タイトル'),
+            new Content('本文'),
+            new DateTime()
+        );
+
+        $this->assertSame($expected, $diary->subCategoryName());
     }
 
     /**

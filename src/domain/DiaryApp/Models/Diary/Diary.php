@@ -121,9 +121,9 @@ class Diary implements Entity
     /**
      * サブカテゴリー名を取得
      *
-     * @return integer|null
+     * @return string|null
      */
-    public function subCategoryName(): int|null
+    public function subCategoryName(): string|null
     {
         return $this->subCategory ? $this->subCategory->name() : null;
     }
