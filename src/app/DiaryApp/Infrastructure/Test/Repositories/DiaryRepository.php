@@ -80,6 +80,7 @@ class DiaryRepository implements DiaryRepositoryInterface
     public function save(Diary $diary): void
     {
         $this->store[] = (object) [
+            'id' => $diary->id(),
             'userId' => $diary->userId(),
             'mainCategoryId' => $diary->mainCategoryId(),
             'subCategoryId' => $diary->subCategoryId(),
