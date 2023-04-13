@@ -2,10 +2,11 @@
 namespace App\DiaryApp\UseCase\Diary\GetDetail;
 
 use Domain\DiaryApp\Models\Diary\Id;
+use App\DiaryApp\UseCase\Diary\GetDetail\GetDetailInterface;
 use App\Exceptions\DiaryApp\Diary\UseCase\DiaryNotFoundException;
 use Domain\DiaryApp\Models\Diary\RepositoryInterface as DiaryRepositoryInterface;
 
-class GetDetail
+class GetDetail implements GetDetailInterface
 {
     private DiaryRepositoryInterface $diaryRepository;
 
