@@ -3,7 +3,7 @@ namespace Domain\DiaryApp\Services;
 
 use Domain\DiaryApp\Models\Diary\Diary;
 use Domain\DiaryApp\Models\Diary\Title;
-use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
+use Domain\DiaryApp\Models\Diary\RepositoryInterface as DiaryRepositoryInterface;
 
 class DiaryService
 {

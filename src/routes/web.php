@@ -36,5 +36,6 @@ Route::prefix('/')->name('diaryApp.')->namespace('App\Http\Controllers\DiaryApp'
         Route::get('/create', 'Create')->name('create');
         Route::post('/', 'Store')->name('store');
         Route::get('/', 'Index')->name('index');
+        Route::get('/{id}', 'Detail')->name('detail');
     });
 });

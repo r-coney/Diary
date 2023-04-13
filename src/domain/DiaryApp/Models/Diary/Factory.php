@@ -2,17 +2,27 @@
 namespace Domain\DiaryApp\Models\Diary;
 
 use DateTime;
+use stdClass;
 use Illuminate\Support\Facades\DB;
 use Domain\DiaryApp\Models\Diary\Id;
 use Domain\DiaryApp\Models\Diary\Title;
 use Domain\DiaryApp\Models\Diary\Content;
+use Domain\DiaryApp\Models\Category\Category;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Diary\FactoryInterface;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
-use stdClass;
+use Domain\DiaryApp\Models\Category\RepositoryInterface as CategoryRepositoryInterface;
 
 class Factory implements FactoryInterface
 {
+    private CategoryRepositoryInterface $categoryRepository;
+
+    public function __construct(
+        CategoryRepositoryInterface $categoryRepository
+    ) {
+        $this->categoryRepository = $categoryRepository;
+    }
+
     public function create(
         UserId $userId,
         CategoryId $mainCategoryId,
@@ -27,11 +37,14 @@ class Factory implements FactoryInterface
             $id = $this->getNextSequenceNumber();
         }
 
+        $mainCategory = $this->getCategory($mainCategoryId);
+        $subCategory = isset($subCategoryId) ? $this->getCategory($subCategoryId) : null;
+
         return new Diary(
             $id,
             $userId,
-            $mainCategoryId,
-            $subCategoryId,
+            $mainCategory,
+            $subCategory,
             $title,
             $content,
             $createdAt,
@@ -69,5 +82,22 @@ class Factory implements FactoryInterface
         });
 
         return new Id($newNumber);
+    }
+
+    /**
+     * カテゴリーを取得
+     *
+     * @param CategoryId $categoryId
+     * @return Category
+     */
+    public function getCategory(CategoryId $categoryId): Category
+    {
+        $category = $this->categoryRepository->find($categoryId);
+
+        if (is_null($category)) {
+            throw new InvalidCategoryIdException('無効なカテゴリーIDが指定されました');
+        }
+
+        return $category;
     }
 }

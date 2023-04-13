@@ -4,39 +4,46 @@ namespace Tests\Unit\Domain\DiaryApp\Services;
 
 use DateTime;
 use Tests\TestCase;
-use Domain\DiaryApp\Models\Diary\Id;
-use Domain\DiaryApp\Models\Diary\Diary;
+use App\DiaryApp\Infrastructure\Test\Repositories\DiaryRepository;
 use Domain\DiaryApp\Models\Diary\Title;
 use Domain\DiaryApp\Models\Diary\Content;
 use Domain\DiaryApp\Services\DiaryService;
 use Domain\DiaryApp\Models\User\Id as UserId;
-use App\DiaryApp\Infrastructure\Test\Repositories\DiaryRepository;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
+use Domain\DiaryApp\Models\Diary\FactoryInterface as DiaryFactoryInterface;
+use Domain\DiaryApp\Models\Diary\RepositoryInterface as DiaryRepositoryInterface;
+use Domain\DiaryApp\Models\Diary\InMemoryFactory as DiaryFactory;
 
 class DiaryServiceTest extends TestCase
 {
+    private DiaryFactoryInterface $diaryFactory;
+    private DiaryRepositoryInterface $diaryRepository;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->diaryFactory = new DiaryFactory();
+        $this->diaryRepository = new DiaryRepository($this->diaryFactory);
+    }
+
     /**
      * @exists
      * @test
      */
     public function Diaryがすでに存在する場合、trueを返すこと(): void
     {
-        $diaryRepository = new DiaryRepository();
-
-        $diary = new Diary(
-            new Id(1),
+        $diary = $this->diaryFactory->create(
             new UserId(1),
             new CategoryId(1),
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            new DateTime(date('Y-m-d H:i:s'))
+            new DateTime(),
         );
 
-        $diaryRepository = new DiaryRepository();
-        $diaryRepository->save($diary);
+        $this->diaryRepository->save($diary);
 
-        $diaryService = new DiaryService($diaryRepository);
+        $diaryService = new DiaryService($this->diaryRepository);
         $actual = $diaryService->exists($diary);
 
         $this->assertTrue($actual);
@@ -48,20 +55,16 @@ class DiaryServiceTest extends TestCase
      */
     public function Diaryが存在しない場合、falseを返すこと(): void
     {
-        $diaryRepository = new DiaryRepository();
-
-        $diary = new Diary(
-            new Id(1),
+        $diary = $this->diaryFactory->create(
             new UserId(1),
             new CategoryId(1),
             new CategoryId(2),
             new Title('タイトル'),
             new Content('本文'),
-            new DateTime(date('Y-m-d H:i:s'))
+            new DateTime(),
         );
 
-        $diaryRepository = new DiaryRepository();
-        $diaryService = new DiaryService($diaryRepository);
+        $diaryService = new DiaryService($this->diaryRepository);
         $actual = $diaryService->exists($diary);
 
         $this->assertFalse($actual);

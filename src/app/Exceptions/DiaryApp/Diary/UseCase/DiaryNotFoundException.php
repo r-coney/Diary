@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Exceptions\DiaryApp\Diary;
+namespace App\Exceptions\DiaryApp\Diary\UseCase;
 
 use App\Exceptions\ApplicationException;
 
-class CanNotCreateDiaryException extends ApplicationException
+class DiaryNotFoundException extends ApplicationException
 {
     public function render(): void
     {

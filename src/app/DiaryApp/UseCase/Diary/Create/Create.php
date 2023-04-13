@@ -9,9 +9,9 @@ use Domain\DiaryApp\Services\DiaryService;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
 use App\DiaryApp\UseCase\Diary\Create\CreateInterface;
-use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
+use Domain\DiaryApp\Models\Diary\RepositoryInterface as DiaryRepositoryInterface;
 use App\DiaryApp\UseCase\Diary\Create\CreateCommandInterface;
-use App\Exceptions\DiaryApp\Diary\CanNotCreateDiaryException;
+use App\Exceptions\DiaryApp\Diary\UseCase\CanNotCreateDiaryException;
 use Domain\DiaryApp\Models\Diary\FactoryInterface as DiaryFactoryInterface;
 
 class Create implements CreateInterface

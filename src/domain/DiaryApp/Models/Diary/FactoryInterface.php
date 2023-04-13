@@ -6,6 +6,7 @@ use Domain\DiaryApp\Models\Diary\Id;
 use Domain\DiaryApp\Models\Diary\Diary;
 use Domain\DiaryApp\Models\Diary\Title;
 use Domain\DiaryApp\Models\Diary\Content;
+use Domain\DiaryApp\Models\Category\Category;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
 
@@ -34,4 +35,12 @@ interface FactoryInterface
         ?DateTime $updatedAt = null,
         Id $id = null,
     ): Diary;
+
+    /**
+     * カテゴリーを取得
+     *
+     * @param CategoryId $categoryId
+     * @return Category
+     */
+    public function getCategory(CategoryId $categoryId): Category;
 }
