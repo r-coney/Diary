@@ -3,8 +3,8 @@
 namespace App\Providers\DiaryApp;
 
 use Illuminate\Support\ServiceProvider;
-use Domain\DiaryApp\Models\Diary\DiaryRepositoryInterface;
-use Domain\DiaryApp\Models\Category\CategoryRepositoryInterface;
+use Domain\DiaryApp\Models\Diary\RepositoryInterface as DiaryRepositoryInterface;
+use Domain\DiaryApp\Models\Category\RepositoryInterface as CategoryRepositoryInterface;
 use App\DiaryApp\UseCase\Diary\QueryServiceInterface as DiaryQueryServiceInterface;
 use App\DiaryApp\Infrastructure\InMemory\Queries\DiaryQueryService as InMemoryDiaryQueryService;
 use App\DiaryApp\Infrastructure\InMemory\Repositories\DiaryRepository as InMemoryDiaryRepository;
