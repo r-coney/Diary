@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions\DiaryApp\Diary;
+namespace App\Exceptions\DiaryApp\Diary\UseCase;
 
 use App\Exceptions\ApplicationException;
 
