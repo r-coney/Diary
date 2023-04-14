@@ -29,4 +29,12 @@ interface RepositoryInterface
      * @return void
      */
     public function save(Diary $diary): void;
+
+    /**
+     * Diaryエンティティを削除
+     *
+     * @param Diary $diary
+     * @return void
+     */
+    public function delete(Diary $diary): void;
 }
