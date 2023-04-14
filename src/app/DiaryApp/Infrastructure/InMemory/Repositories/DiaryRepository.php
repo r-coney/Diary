@@ -79,6 +79,14 @@ class DiaryRepository implements DiaryRepositoryInterface
 
     public function save(Diary $diary): void
     {
+        $store = $this->store();
+
+        foreach ($store as $index => $entity) {
+            if ($diary->id() === $entity->id) {
+                unset($store[$index]);
+            }
+        }
+
         $diaryData = new stdClass();
         $diaryData->id = $diary->id();
         $diaryData->userId = $diary->userId();
@@ -89,7 +97,6 @@ class DiaryRepository implements DiaryRepositoryInterface
         $diaryData->createdAt = $diary->createdAt();
         $diaryData->updatedAt = $diary->updatedAt();
 
-        $store = $this->store();
         $store[] = $diaryData;
         Cache::put('diaries', $store);
     }
