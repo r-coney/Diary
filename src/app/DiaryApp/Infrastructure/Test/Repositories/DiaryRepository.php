@@ -96,4 +96,13 @@ class DiaryRepository implements DiaryRepositoryInterface
             'updatedAt' => $diary->updatedAt()
         ];
     }
+
+    public function delete(Diary $diary): void
+    {
+        foreach ($this->store as $index => $entity) {
+            if ($diary->id() === $entity->id) {
+                unset($this->store[$index]);
+            }
+        }
+    }
 }

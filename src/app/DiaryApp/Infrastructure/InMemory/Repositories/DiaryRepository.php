@@ -100,4 +100,17 @@ class DiaryRepository implements DiaryRepositoryInterface
         $store[] = $diaryData;
         Cache::put('diaries', $store);
     }
+
+    public function delete(Diary $diary): void
+    {
+        $store = $this->store();
+
+        foreach ($store as $index => $entity) {
+            if ($diary->id() === $entity->id) {
+                unset($store[$index]);
+            }
+        }
+
+        Cache::put('diaries', $store);
+    }
 }

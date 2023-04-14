@@ -3,18 +3,20 @@
 namespace App\Providers\DiaryApp;
 
 use Illuminate\Support\ServiceProvider;
-use App\DiaryApp\UseCase\Diary\Create\CreateInterface as CreateDiaryInterface;
+use App\DiaryApp\UseCase\Diary\Delete\Delete as DeleteDiary;
+use App\DiaryApp\UseCase\Diary\Delete\DeleteInterface as DeleteDiaryInterface;
+use App\DiaryApp\UseCase\Diary\Edit\Edit as EditDiary;
+use App\DiaryApp\UseCase\Diary\GetList\DiaryListQueryData;
 use App\DiaryApp\UseCase\Diary\Create\Create as CreateDiary;
-use App\DiaryApp\UseCase\Diary\Create\CreateCommandInterface as CreateDiaryCommandInterface;
-use App\DiaryApp\UseCase\Diary\Create\CreateCommand as CreateDiaryCommand;
-use App\DiaryApp\UseCase\Diary\GetList\GetListInterface as GetDiaryListInterface;
 use App\DiaryApp\UseCase\Diary\GetList\GetList as GetDiaryList;
 use App\DiaryApp\UseCase\Diary\GetList\DiaryListQueryDataInterface;
-use App\DiaryApp\UseCase\Diary\GetList\DiaryListQueryData;
-use App\DiaryApp\UseCase\Diary\GetDetail\GetDetailInterface as GetDiaryDetailInterface;
 use App\DiaryApp\UseCase\Diary\GetDetail\GetDetail as GetDiaryDetail;
 use App\DiaryApp\UseCase\Diary\Edit\EditInterface as EditDiaryInterface;
-use App\DiaryApp\UseCase\Diary\Edit\Edit as EditDiary;
+use App\DiaryApp\UseCase\Diary\Create\CreateCommand as CreateDiaryCommand;
+use App\DiaryApp\UseCase\Diary\Create\CreateInterface as CreateDiaryInterface;
+use App\DiaryApp\UseCase\Diary\GetList\GetListInterface as GetDiaryListInterface;
+use App\DiaryApp\UseCase\Diary\GetDetail\GetDetailInterface as GetDiaryDetailInterface;
+use App\DiaryApp\UseCase\Diary\Create\CreateCommandInterface as CreateDiaryCommandInterface;
 
 class ApplicationServiceProvider extends ServiceProvider
 {
@@ -29,6 +31,7 @@ class ApplicationServiceProvider extends ServiceProvider
         $this->app->bind(DiaryListQueryDataInterface::class, DiaryListQueryData::class);
         $this->app->bind(GetDiaryDetailInterface::class, GetDiaryDetail::class);
         $this->app->bind(EditDiaryInterface::class, EditDiary::class);
+        $this->app->bind(DeleteDiaryInterface::class, DeleteDiary::class);
     }
 
     /**
