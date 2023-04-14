@@ -14,7 +14,7 @@ use App\DiaryApp\UseCase\Diary\GetList\DiaryListQueryData;
 use App\DiaryApp\UseCase\Diary\GetDetail\GetDetailInterface as GetDiaryDetailInterface;
 use App\DiaryApp\UseCase\Diary\GetDetail\GetDetail as GetDiaryDetail;
 use App\DiaryApp\UseCase\Diary\Edit\EditInterface as EditDiaryInterface;
-use App\DiaryApp\UseCase\Diary\Edit as EditDiary;
+use App\DiaryApp\UseCase\Diary\Edit\Edit as EditDiary;
 
 class ApplicationServiceProvider extends ServiceProvider
 {
