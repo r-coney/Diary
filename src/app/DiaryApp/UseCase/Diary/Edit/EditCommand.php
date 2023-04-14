@@ -49,4 +49,9 @@ class EditCommand implements EditCommandInterface
     {
         return $this->subCategoryId;
     }
+
+    public function hasSubCategoryId(): bool
+    {
+        return !is_null($this->subCategoryId);
+    }
 }

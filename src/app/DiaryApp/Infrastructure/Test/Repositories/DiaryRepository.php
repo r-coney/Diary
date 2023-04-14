@@ -79,6 +79,12 @@ class DiaryRepository implements DiaryRepositoryInterface
 
     public function save(Diary $diary): void
     {
+        foreach ($this->store as $index => $entity) {
+            if ($diary->id() === $entity->id) {
+                unset($this->store[$index]);
+            }
+        }
+
         $this->store[] = (object) [
             'id' => $diary->id(),
             'userId' => $diary->userId(),
