@@ -32,12 +32,13 @@ require __DIR__.'/auth.php';
 
 // DiaryApp
 Route::prefix('/')->name('diaryApp.')->namespace('App\Http\Controllers\DiaryApp')->group(function () {
-    Route::prefix('diaries')->name('diary.')->namespace('Diary')->group(function () {
+    Route::prefix('diary')->name('diary.')->namespace('Diary')->group(function () {
         Route::get('/create', 'Create')->name('create');
         Route::post('/', 'Store')->name('store');
         Route::get('/', 'Index')->name('index');
         Route::get('/{id}', 'Detail')->name('detail');
         Route::get('/{id}/edit', 'Edit')->name('edit');
         Route::put('/{id}', 'Update')->name('update');
+        Route::delete('/{id}', 'Delete')->name('delete');
     });
 });
