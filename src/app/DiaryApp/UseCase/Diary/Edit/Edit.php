@@ -1,20 +1,42 @@
 <?php
 namespace App\DiaryApp\UseCase\Diary\Edit;
 
+use Domain\DiaryApp\Models\Diary\Id;
+use Domain\DiaryApp\Models\Diary\Title;
+use Domain\DiaryApp\Models\Diary\Content;
+use Domain\DiaryApp\Models\Category\Id as CategoryId;
+use App\DiaryApp\UseCase\Diary\Edit\EditCommandInterface;
+use Domain\DiaryApp\Models\Diary\RepositoryInterface as DiaryRepositoryInterface;
+use Domain\DiaryApp\Models\Category\RepositoryInterface as CategoryRepositoryInterface;
+
 class Edit implements EditInterface
 {
-    public function __invoke(UpdateCommandInterface $command): void
+    private DiaryRepositoryInterface $diaryRepository;
+    private CategoryRepositoryInterface $categoryRepository;
+
+    public function __construct(
+        DiaryRepositoryInterface $diaryRepository,
+        CategoryRepositoryInterface $categoryRepository
+    ) {
+        $this->diaryRepository = $diaryRepository;
+        $this->categoryRepository = $categoryRepository;
+    }
+
+    public function __invoke(EditCommandInterface $command): void
     {
-        // diaryを取得
+        $diary = $this->diaryRepository->find(new Id($command->diaryId()));
+        $diary->changeTitle(new Title($command->title()));
+        $diary->changeContent(new Content($command->content()));
 
-        // mainCategoryが存在する場合
-        // mainCategoryを取得
+        $mainCategory = $this->categoryRepository->find(new CategoryId($command->mainCategoryId()));
+        $diary->changeMainCategory($mainCategory);
+        if ($command->hasSubCategoryId()) {
+            $subCategory = $this->categoryRepository->find(new CategoryId($command->subCategoryId()));
+        } else {
+            $subCategory = null;
+        }
+        $diary->changeSubCategory($subCategory);
 
-        // subCategoryが存在する場合
-        // subCategoryを取得
-
-        // diaryの項目を更新
-
-        // diaryを更新
+        $this->diaryRepository->save($diary);
     }
 }

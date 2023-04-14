@@ -37,4 +37,11 @@ interface EditCommandInterface
      * @return integer|null
      */
     public function subCategoryId(): ?int;
+
+    /**
+     * サブカテゴリーが選択されているかを判定
+     *
+     * @return bool
+     */
+    public function hasSubCategoryId(): bool;
 }
