@@ -6,5 +6,11 @@ use Domain\DiaryApp\Models\Category\Category;
 
 interface RepositoryInterface
 {
-    public function find(Id $id): Category;
+    /**
+     * IDに紐づくカテゴリーを取得
+     *
+     * @param Id $id
+     * @return Category|null
+     */
+    public function find(Id $id): ?Category;
 }
