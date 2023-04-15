@@ -60,6 +60,23 @@ class DiaryTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function 存在しないカテゴリーを指定した場合、Diaryモデルを作成できないこと(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->diaryFactory->create(
+            new UserId(1),
+            new CategoryId(999),
+            new CategoryId(999),
+            new Title('タイトル'),
+            new Content('本文'),
+            new DateTime()
+        );
+    }
+
+    /**
      * id()
      * @test
      */

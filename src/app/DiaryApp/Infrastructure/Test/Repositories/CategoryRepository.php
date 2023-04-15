@@ -42,7 +42,7 @@ class CategoryRepository implements CategoryRepositoryInterface
         return $this->store;
     }
 
-    public function find(Id $id): Category
+    public function find(Id $id): ?Category
     {
         foreach ($this->store() as $entity) {
             if ($id->value() === $entity->id) {
@@ -54,5 +54,7 @@ class CategoryRepository implements CategoryRepositoryInterface
                 );
             }
         }
+
+        return null;
     }
 }
