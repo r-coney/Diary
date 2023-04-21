@@ -7,6 +7,7 @@ use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\Email;
 use Domain\UserAccount\Models\User\EncryptedPassword;
+use InvalidArgumentException;
 
 class User implements Entity
 {
@@ -17,6 +18,44 @@ class User implements Entity
     private DateTime $registeredDateTime;
     private ?DateTime $updatedDateTime;
     private ?DateTime $deletedDateTime;
+
+    public function __construct(
+        Id $id,
+        Name $name,
+        Email $email,
+        EncryptedPassword $password,
+        DateTime $registeredDateTime,
+        ?DateTime $updatedDateTime = null,
+        ?DateTime $deletedDateTime = null
+    ) {
+        if (is_null($id)) {
+            throw new InvalidArgumentException('IDは必須です');
+        }
+
+        if (is_null($name)) {
+            throw new InvalidArgumentException('名前は必須です');
+        }
+
+        if (is_null($email)) {
+            throw new InvalidArgumentException('メールアドレスは必須です');
+        }
+
+        if (is_null($password)) {
+            throw new InvalidArgumentException('パスワードは必須です');
+        }
+
+        if (is_null($registeredDateTime)) {
+            throw new InvalidArgumentException('登録日時は必須です');
+        }
+
+        $this->id = $id;
+        $this->name = $name;
+        $this->email = $email;
+        $this->password = $password;
+        $this->registeredDateTime = $registeredDateTime;
+        $this->updatedDateTime = $updatedDateTime;
+        $this->deletedDateTime = $deletedDateTime;
+    }
 
     public function id(): int
     {
@@ -121,10 +160,10 @@ class User implements Entity
     /**
      * パスワードを変更
      *
-     * @param Password $password
+     * @param EncryptedPassword $password
      * @return void
      */
-    public function changePassword(Password $password): void
+    public function changePassword(EncryptedPassword $password): void
     {
         $this->password = $password;
         $this->changeUpdateDateTime();
