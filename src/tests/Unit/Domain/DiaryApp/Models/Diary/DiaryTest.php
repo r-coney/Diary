@@ -14,6 +14,7 @@ use Domain\DiaryApp\Models\Category\Category;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Category\Id as CategoryId;
 use Domain\DiaryApp\Models\Diary\InMemoryFactory as DiaryFactory;
+use Domain\DiaryApp\Exceptions\Category\InvalidIdException as InvalidCategoryIdException;
 
 class DiaryTest extends TestCase
 {
@@ -64,7 +65,7 @@ class DiaryTest extends TestCase
      */
     public function 存在しないカテゴリーを指定した場合、Diaryモデルを作成できないこと(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(InvalidCategoryIdException::class);
 
         $this->diaryFactory->create(
             new UserId(1),

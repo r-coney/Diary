@@ -11,6 +11,7 @@ use Domain\DiaryApp\Models\Category\Category;
 use Domain\DiaryApp\Models\Category\Name as CategoryName;
 use Domain\DiaryApp\Models\User\Id as UserId;
 use Domain\DiaryApp\Models\Diary\FactoryInterface;
+use Domain\DiaryApp\Exceptions\Category\InvalidIdException as InvalidCategoryIdException;
 
 class InMemoryFactory implements FactoryInterface
 {
@@ -82,5 +83,7 @@ class InMemoryFactory implements FactoryInterface
                 );
             }
         }
+
+        throw new InvalidCategoryIdException('無効なカテゴリーIDが指定されました');
     }
 }
