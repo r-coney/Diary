@@ -22,4 +22,12 @@ interface RepositoryInterface
      * @return User|null
      */
     public function findByEmail(Email $email): ?User;
+
+    /**
+     * ユーザーエンティティを永続化
+     *
+     * @param User $user
+     * @return void
+     */
+    public function save(User $user): void;
 }

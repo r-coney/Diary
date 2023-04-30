@@ -201,6 +201,13 @@ return [
         App\Providers\DiaryApp\ApplicationServiceProvider::class,
         App\Providers\DiaryApp\infrastructureServiceProvider::class,
         App\Providers\DiaryApp\DomainServiceProvider::class,
+
+        /*
+        * UserAccount
+        */
+        App\Providers\UserAccount\ApplicationServiceProvider::class,
+        App\Providers\UserAccount\InfrastructureServiceProvider::class,
+        App\Providers\UserAccount\DomainServiceProvider::class,
     ],
 
     /*
