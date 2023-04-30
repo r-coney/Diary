@@ -107,9 +107,9 @@ class User implements Entity
      *
      * @return string
      */
-    public function updatedDateTime(): string
+    public function updatedDateTime(): ?string
     {
-        return $this->updatedDateTime->format('Y-m-d H:i:s');
+        return isset($this->updatedDateTime) ? $this->updatedDateTime->format('Y-m-d H:i:s') : null;
     }
 
     /**
@@ -117,9 +117,9 @@ class User implements Entity
      *
      * @return string
      */
-    public function deletedDateTime(): string
+    public function deletedDateTime(): ?string
     {
-        return $this->deletedDateTime->format('Y-m-d H:i:s');
+        return isset($this->deletedDateTime) ? $this->deletedDateTime->format('Y-m-d H:i:s') : null;
     }
 
     /**
