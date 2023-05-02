@@ -42,3 +42,12 @@ Route::prefix('/')->name('diaryApp.')->namespace('App\Http\Controllers\DiaryApp'
         Route::delete('/{id}', 'Delete')->name('delete');
     });
 });
+
+// UserAccount
+Route::prefix('/')->name('userAccount.')->namespace('App\Http\Controllers\UserAccount')->group(function () {
+    Route::prefix('user')->name('user.')->namespace('User')->group(function () {
+        Route::get('/register', 'Register')->name('register');
+        Route::post('/', 'Store')->name('store');
+        Route::get('/{id}','Detail')->name('detail');
+    });
+});
