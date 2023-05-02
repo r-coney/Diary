@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\App\UserAccount\UseCase\User\GetDetail;
 
-use tests\TestCase;
+use Tests\TestCase;
 use DateTime;
 use App\UserAccount\UseCase\User\GetDetail\GetDetail;
 use App\Exceptions\UserAccount\User\UseCase\UserNotFoundException;

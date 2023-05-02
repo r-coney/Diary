@@ -49,6 +49,8 @@ class UserRepository implements UserRepositoryInterface
             'updated_at' => $user->updatedDateTime(),
             'deleted_at' => $user->deletedDateTime()
         ];
+
+        Cache::put('users', $store);
     }
 
     public function find(Id $id): ?User

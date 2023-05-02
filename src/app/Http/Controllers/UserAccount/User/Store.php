@@ -28,6 +28,8 @@ class Store extends Controller
 
         $response = ($this->register)($registerCommand);
 
-        dd($response);
+        return redirect()->route('userAccount.user.detail', [
+            'id' => $response['user']['id'],
+        ]);
     }
 }
