@@ -8,6 +8,7 @@ use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\User;
 use Domain\UserAccount\Models\User\Email;
 use Domain\UserAccount\Models\User\Password;
+use Domain\UserAccount\Models\User\EncryptedPassword;
 use Domain\UserAccount\Models\User\FactoryInterface as UserFactoryInterface;
 use Domain\UserAccount\Models\User\RepositoryInterface as UserRepositoryInterface;
 
@@ -60,7 +61,7 @@ class UserRepository implements UserRepositoryInterface
                 return $this->userFactory->create(
                     new Name($entity->name),
                     new Email($entity->email),
-                    new Password($entity->password),
+                    new EncryptedPassword($entity->password),
                     new DateTime($entity->created_at),
                     isset($entity->updated_at) ? new DateTime($entity->updated_at) : null,
                     isset($entity->deleted_at) ? new DateTime($entity->deleted_at) : null,
@@ -79,7 +80,7 @@ class UserRepository implements UserRepositoryInterface
                 return $this->userFactory->create(
                     new Name($entity->name),
                     new Email($entity->email),
-                    new Password($entity->password),
+                    new EncryptedPassword($entity->password),
                     new DateTime($entity->created_at),
                     isset($entity->updated_at) ? new DateTime($entity->updated_at) : null,
                     isset($entity->deleted_at) ? new DateTime($entity->deleted_at) : null,

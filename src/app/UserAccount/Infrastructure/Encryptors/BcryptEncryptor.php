@@ -15,4 +15,16 @@ class BcryptEncryptor implements Encryptor
     {
         return password_hash($string, PASSWORD_BCRYPT);
     }
+
+    /**
+     * 文字列とハッシュ化された文字列が一致するか検証
+     *
+     * @param string $string
+     * @param string $encryptedString
+     * @return bool
+     */
+    public function verify(string $string, string $encryptedString): bool
+    {
+        return password_verify($string, $encryptedString);
+    }
 }

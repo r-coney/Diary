@@ -7,10 +7,22 @@ use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\User;
 use Domain\UserAccount\Models\User\Email;
+use Domain\UserAccount\Models\User\Password;
+use Domain\UserAccount\Models\User\Encryptor;
 use Domain\UserAccount\Models\User\EncryptedPassword;
+use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
 
 class UserTest extends TestCase
 {
+    private Encryptor $encryptor;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->encryptor = new BcryptEncryptor();
+    }
+
     /**
      * id()
      * @test
@@ -201,38 +213,21 @@ class UserTest extends TestCase
     }
 
     /**
-     * authenticate()
+     * verifyPassword()
      * @test
      */
-    public function パスワードの認証ができる(): void
+    public function パスワードの認証ができること(): void
     {
-        $password = new EncryptedPassword('password');
+        $password = new Password('password1');
         $user = new User(
             new Id(1),
             new Name('test'),
             new Email('test@example.com'),
-            $password,
+            $password->encrypt($this->encryptor),
             new DateTime()
         );
 
-        $this->assertTrue($user->authenticate($password));
-    }
-
-    /**
-     * authenticate()
-     * @test
-     */
-    public function 認証に与えられたパスワードがUserのパスワードと一致しない場合、認証できないこと(): void
-    {
-        $user = new User(
-            new Id(1),
-            new Name('test'),
-            new Email('test@example.com'),
-            new EncryptedPassword('password'),
-            new DateTime()
-        );
-
-        $this->assertFalse($user->authenticate(new EncryptedPassword('otherPassword')));
+        $this->assertTrue($user->verifyPassword($this->encryptor, $password->value()));
     }
 
     /**

@@ -93,6 +93,18 @@ class User implements Entity
     }
 
     /**
+     * パスワードを検証
+     *
+     * @param Encryptor $encryptor
+     * @param string $password
+     * @return bool
+     */
+    public function verifyPassword(Encryptor $encryptor, string $password): bool
+    {
+        return $encryptor->verify($password, $this->password());
+    }
+
+    /**
      * 登録日時を取得
      *
      * @return string
@@ -120,17 +132,6 @@ class User implements Entity
     public function deletedDateTime(): ?string
     {
         return isset($this->deletedDateTime) ? $this->deletedDateTime->format('Y-m-d H:i:s') : null;
-    }
-
-    /**
-     * 与えられたパスワードが、ユーザーのパスワードと一致するかどうかを判定
-     *
-     * @param EncryptedPassword $password
-     * @return bool
-     */
-    public function authenticate(EncryptedPassword $password): bool
-    {
-        return $this->password->equals($password);
     }
 
     /**

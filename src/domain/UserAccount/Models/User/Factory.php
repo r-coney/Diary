@@ -22,7 +22,7 @@ class Factory implements FactoryInterface
     public function create(
         Name $name,
         Email $email,
-        Password $password,
+        Password|EncryptedPassword $password,
         DateTime $registeredDateTime,
         DateTime $updatedDateTime = null,
         DateTime $deletedDateTime = null,
@@ -36,7 +36,7 @@ class Factory implements FactoryInterface
             $id,
             $name,
             $email,
-            $password->encrypt($this->encryptor),
+            is_a($password, EncryptedPassword::class) ? $password : $password->encrypt($this->encryptor),
             $registeredDateTime,
             $updatedDateTime,
             $deletedDateTime,

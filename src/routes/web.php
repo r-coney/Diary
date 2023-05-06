@@ -49,5 +49,7 @@ Route::prefix('/')->name('userAccount.')->namespace('App\Http\Controllers\UserAc
         Route::get('/register', 'Register')->name('register');
         Route::post('/', 'Store')->name('store');
         Route::get('/{id}','Detail')->name('detail');
+        Route::get('/{id}/edit', 'Edit')->name('edit');
+        Route::put('/{id}', 'Update')->name('update');
     });
 });
