@@ -8,12 +8,14 @@ use App\UserAccount\UseCase\User\Register\Register;
 use App\UserAccount\UseCase\User\Register\RegisterCommand;
 use App\UserAccount\Infrastructure\Test\Repositories\UserRepository;
 use App\Exceptions\UserAccount\User\UseCase\CanNotRegisterUserException;
+use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
 use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\User;
 use Domain\UserAccount\Models\User\Email;
 use Domain\UserAccount\Services\UserService;
 use Domain\UserAccount\Models\User\EncryptedPassword;
+use Domain\UserAccount\Models\User\Encryptor;
 use Domain\UserAccount\Models\User\InMemoryFactory as InMemoryUserFactory;
 use Domain\UserAccount\Models\User\FactoryInterface as UserFactoryInterface;
 use Domain\UserAccount\Models\User\RepositoryInterface as UserRepositoryInterface;
@@ -23,11 +25,13 @@ class RegisterTest extends TestCase
     private UserFactoryInterface $userFactory;
     private UserRepositoryInterface $userRepository;
     private UserService $userService;
+    private Encryptor $encryptor;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->userFactory = new InMemoryUserFactory();
+        $this->encryptor = new BcryptEncryptor();
+        $this->userFactory = new InMemoryUserFactory($this->encryptor);
         $this->userRepository = new UserRepository($this->userFactory);
         $this->userService = new UserService($this->userRepository);
     }

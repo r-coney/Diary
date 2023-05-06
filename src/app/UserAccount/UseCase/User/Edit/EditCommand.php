@@ -36,14 +36,29 @@ class EditCommand implements EditCommandInterface
         return $this->newName;
     }
 
+    public function hasNewName(): bool
+    {
+        return isset($this->newName);
+    }
+
     public function newEmail(): ?string
     {
         return $this->newEmail;
     }
 
+    public function hasNewEmail(): bool
+    {
+        return isset($this->newEmail);
+    }
+
     public function newPassword(): ?string
     {
         return $this->newPassword;
+    }
+
+    public function hasNewPassword(): bool
+    {
+        return isset($this->newPassword);
     }
 
     public function newPasswordConfirmation(): ?string
