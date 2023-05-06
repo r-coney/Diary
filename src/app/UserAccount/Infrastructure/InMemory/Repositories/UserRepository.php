@@ -7,7 +7,6 @@ use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\User;
 use Domain\UserAccount\Models\User\Email;
-use Domain\UserAccount\Models\User\Password;
 use Domain\UserAccount\Models\User\EncryptedPassword;
 use Domain\UserAccount\Models\User\FactoryInterface as UserFactoryInterface;
 use Domain\UserAccount\Models\User\RepositoryInterface as UserRepositoryInterface;
@@ -76,7 +75,7 @@ class UserRepository implements UserRepositoryInterface
     public function findByEmail(Email $email): ?User
     {
         foreach ($this->store as $entity) {
-            if ($email->value() === $entity->email) {
+            if ($email->value() === $entity->email && is_null($entity->deleted_at)) {
                 return $this->userFactory->create(
                     new Name($entity->name),
                     new Email($entity->email),
