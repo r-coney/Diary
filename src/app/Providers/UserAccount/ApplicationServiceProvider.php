@@ -2,6 +2,8 @@
 
 namespace App\Providers\UserAccount;
 
+use App\UserAccount\UseCase\User\Edit\Edit as EditUser;
+use App\UserAccount\UseCase\User\Edit\EditInterface as EditUserInterface;
 use App\UserAccount\UseCase\User\Register\RegisterInterface as RegisterUserInterface;
 use App\UserAccount\UseCase\User\Register\Register as RegisterUser;
 use App\UserAccount\UseCase\User\GetDetail\GetDetailInterface as GetUserDetailInterface;
@@ -17,6 +19,7 @@ class ApplicationServiceProvider extends ServiceProvider
     {
         $this->app->bind(RegisterUserInterface::class, RegisterUser::class);
         $this->app->bind(GetUserDetailInterface::class, GetUserDetail::class);
+        $this->app->bind(EditUserInterface::class, EditUser::class);
     }
 
     /**
