@@ -48,7 +48,7 @@ class UserRepository implements RepositoryInterface
     public function findByEmail(Email $email): ?User
     {
         foreach ($this->store as $entity) {
-            if ($email->value() === $entity->email) {
+            if ($email->value() === $entity->email && is_null($entity->deleted_at)) {
                 return $this->userFactory->create(
                     new Name($entity->name),
                     new Email($entity->email),

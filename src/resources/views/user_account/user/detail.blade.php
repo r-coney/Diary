@@ -8,3 +8,9 @@
 
 <h3>登録日時</h3>
 {{ $userData->registeredDateTime }}
+
+<form action='{{ route('userAccount.user.delete', ['id' => $userData->id]) }}' method='post'>
+    @method('DELETE')
+    @csrf
+    <input type="submit" value='削除'>
+</form>
