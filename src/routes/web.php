@@ -52,5 +52,6 @@ Route::prefix('/')->name('userAccount.')->namespace('App\Http\Controllers\UserAc
         Route::get('/{id}/edit', 'Edit')->name('edit');
         Route::put('/{id}', 'Update')->name('update');
         Route::delete('/{id}', 'Delete')->name('delete');
+        Route::get('/', 'Index')->name('index');
     });
 });
