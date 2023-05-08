@@ -2,11 +2,13 @@
 
 namespace App\Providers\UserAccount;
 
-use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
 use Illuminate\Support\ServiceProvider;
+use Domain\UserAccount\Models\User\Encryptor;
+use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
 use Domain\UserAccount\Models\User\RepositoryInterface as UserRepositoryInterface;
 use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository as InMemoryUserRepository;
-use Domain\UserAccount\Models\User\Encryptor;
+use App\UserAccount\UseCase\User\QueryServiceInterface as UserQueryServiceInterface;
+use App\UserAccount\Infrastructure\InMemory\Queries\UserQueryService;
 
 class InfrastructureServiceProvider extends ServiceProvider
 {
@@ -17,6 +19,7 @@ class InfrastructureServiceProvider extends ServiceProvider
     {
         $this->app->bind(UserRepositoryInterface::class, InMemoryUserRepository::class);
         $this->app->bind(Encryptor::class, BcryptEncryptor::class);
+        $this->app->bind(UserQueryServiceInterface::class, UserQueryService::class);
     }
 
     /**

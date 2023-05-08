@@ -11,6 +11,8 @@ use App\UserAccount\UseCase\User\Edit\Edit as EditUser;
 use App\UserAccount\UseCase\User\Edit\EditInterface as EditUserInterface;
 use App\UserAccount\UseCase\User\GetDetail\GetDetail as GetUserDetail;
 use App\UserAccount\UseCase\User\GetDetail\GetDetailInterface as GetUserDetailInterface;
+use App\UserAccount\UseCase\User\GetList\GetListInterface as GetUserListInterface;
+use App\UserAccount\UseCase\User\GetList\GetList as GetUserList;
 
 class ApplicationServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,7 @@ class ApplicationServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(RegisterUserInterface::class, RegisterUser::class);
+        $this->app->bind(GetUserListInterface::class, GetUserList::class);
         $this->app->bind(GetUserDetailInterface::class, GetUserDetail::class);
         $this->app->bind(EditUserInterface::class, EditUser::class);
         $this->app->bind(DeleteUserInterface::class, DeleteUser::class);
