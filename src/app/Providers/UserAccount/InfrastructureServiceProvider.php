@@ -9,6 +9,8 @@ use Domain\UserAccount\Models\User\RepositoryInterface as UserRepositoryInterfac
 use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository as InMemoryUserRepository;
 use App\UserAccount\UseCase\User\QueryServiceInterface as UserQueryServiceInterface;
 use App\UserAccount\Infrastructure\InMemory\Queries\UserQueryService;
+use App\UserAccount\Infrastructure\Services\AccessTokenService;
+use App\UserAccount\Infrastructure\Services\AccessTokenServiceInterface;
 
 class InfrastructureServiceProvider extends ServiceProvider
 {
@@ -20,6 +22,7 @@ class InfrastructureServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, InMemoryUserRepository::class);
         $this->app->bind(Encryptor::class, BcryptEncryptor::class);
         $this->app->bind(UserQueryServiceInterface::class, UserQueryService::class);
+        $this->app->bind(AccessTokenServiceInterface::class, AccessTokenService::class);
     }
 
     /**
