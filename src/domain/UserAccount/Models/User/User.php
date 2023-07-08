@@ -96,12 +96,12 @@ class User implements Entity
      * パスワードを検証
      *
      * @param Encryptor $encryptor
-     * @param string $password
+     * @param Password $password
      * @return bool
      */
-    public function verifyPassword(Encryptor $encryptor, string $password): bool
+    public function verifyPassword(Encryptor $encryptor, Password $password): bool
     {
-        return $encryptor->verify($password, $this->password());
+        return $encryptor->verify($password->value(), $this->password());
     }
 
     /**
