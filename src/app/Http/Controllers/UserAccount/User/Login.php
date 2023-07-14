@@ -7,7 +7,7 @@ use App\UserAccount\UseCase\User\Login\LoginCommand;
 use App\UserAccount\UseCase\User\Login\LoginInterface;
 use Illuminate\Http\Request;
 
-class Register extends Controller
+class Login extends Controller
 {
     private LoginInterface $login;
 
