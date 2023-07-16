@@ -54,5 +54,6 @@ Route::prefix('/')->name('userAccount.')->namespace('App\Http\Controllers\UserAc
         Route::delete('/{id}', 'Delete')->name('delete');
         Route::get('/', 'Index')->name('index');
         Route::post('/login', 'Login')->name('login');
+        Route::post('/verify-access-token', 'VerifyAccessToken')->name('verifyAccessToken');
     });
 });
