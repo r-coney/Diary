@@ -8,6 +8,12 @@ use Domain\UserAccount\Models\User\Id as UserId;
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
     private array $store = [];
+    private int $currentId;
+
+    public function __construct()
+    {
+        $this->currentId = 0;
+    }
 
     public function store(): array
     {
@@ -52,6 +58,11 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
     public function save(AccessToken $accessToken): void
     {
+        if (is_null($accessToken->id)) {
+            $this->currentId++;
+            $accessToken->id = $this->currentId;
+        }
+
         foreach ($this->store as $index => $token) {
             if ($accessToken->id === $token->id) {
                 unset($this->store[$index]);

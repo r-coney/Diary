@@ -2,11 +2,12 @@
 namespace App\UserAccount\Infrastructure\Services;
 
 use DateTime;
-use Illuminate\Support\Carbon;
 use App\Models\AccessToken;
-use App\UserAccount\Infrastructure\AccessTokenRepositoryInterface;
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 use Domain\UserAccount\Models\User\User;
 use Domain\UserAccount\Models\User\Id as UserId;
+use App\UserAccount\Infrastructure\AccessTokenRepositoryInterface;
 
 class AccessTokenService implements AccessTokenServiceInterface
 {
