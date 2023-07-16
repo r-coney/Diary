@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\UserAccount\Infrastructure\Services\AccessTokenServiceInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,4 +29,9 @@ class AccessToken extends Model
     protected $casts = [
         'expires_at' => 'datetime',
     ];
+
+    public function verify(AccessTokenServiceInterface $accessTokenService, string $requestedToken): bool
+    {
+        return $accessTokenService->authentication(accessToken: $this, requestedToken: $requestedToken);
+    }
 }

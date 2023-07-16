@@ -12,4 +12,13 @@ interface AccessTokenServiceInterface
      * @return AccessToken
      */
     public function generate(User $user): AccessToken;
+
+    /**
+     * リクエストされたアクセストークンが有効か判定
+     *
+     * @param AccessToken $accessToken
+     * @param string $requestedToken
+     * @return bool
+     */
+    public function authentication(AccessToken $accessToken, string $requestedToken): bool;
 }

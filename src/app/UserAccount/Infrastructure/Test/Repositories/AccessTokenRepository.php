@@ -3,6 +3,7 @@ namespace App\UserAccount\Infrastructure\Test\Repositories;
 
 use App\Models\AccessToken;
 use App\UserAccount\Infrastructure\AccessTokenRepositoryInterface;
+use Domain\UserAccount\Models\User\Id as UserId;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
@@ -33,10 +34,26 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         return null;
     }
 
+    public function findByUserId(UserId $userId): ?AccessToken
+    {
+        foreach ($this->store as $entity) {
+            if ($userId->value() === $entity->user_id) {
+                return new AccessToken([
+                    'id' => $entity->id,
+                    'user_id' => $entity->user_id,
+                    'token' => $entity->token,
+                    'expires_at' => $entity->expires_at,
+                ]);
+            }
+        }
+
+        return null;
+    }
+
     public function save(AccessToken $accessToken): void
     {
         foreach ($this->store as $index => $token) {
-            if ($accessToken->id() === $token->id) {
+            if ($accessToken->id === $token->id) {
                 unset($this->store[$index]);
             }
         }
