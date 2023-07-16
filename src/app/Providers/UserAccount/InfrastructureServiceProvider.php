@@ -2,6 +2,7 @@
 
 namespace App\Providers\UserAccount;
 
+use App\UserAccount\Infrastructure\AccessTokenRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 use Domain\UserAccount\Models\User\Encryptor;
 use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
@@ -9,6 +10,7 @@ use Domain\UserAccount\Models\User\RepositoryInterface as UserRepositoryInterfac
 use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository as InMemoryUserRepository;
 use App\UserAccount\UseCase\User\QueryServiceInterface as UserQueryServiceInterface;
 use App\UserAccount\Infrastructure\InMemory\Queries\UserQueryService;
+use App\UserAccount\Infrastructure\InMemory\Repositories\AccessTokenRepository;
 use App\UserAccount\Infrastructure\Services\AccessTokenService;
 use App\UserAccount\Infrastructure\Services\AccessTokenServiceInterface;
 
@@ -23,6 +25,7 @@ class InfrastructureServiceProvider extends ServiceProvider
         $this->app->bind(Encryptor::class, BcryptEncryptor::class);
         $this->app->bind(UserQueryServiceInterface::class, UserQueryService::class);
         $this->app->bind(AccessTokenServiceInterface::class, AccessTokenService::class);
+        $this->app->bind(AccessTokenRepositoryInterface::class, AccessTokenRepository::class);
     }
 
     /**

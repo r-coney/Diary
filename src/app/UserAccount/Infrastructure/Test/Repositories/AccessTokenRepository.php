@@ -2,8 +2,9 @@
 namespace App\UserAccount\Infrastructure\Test\Repositories;
 
 use App\Models\AccessToken;
+use App\UserAccount\Infrastructure\AccessTokenRepositoryInterface;
 
-class AccessTokenRepository
+class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
     private array $store = [];
 
