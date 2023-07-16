@@ -42,15 +42,9 @@ class VerifyTokenCommandTest extends TestCase
             'expires_at' => date('Y-m-d h:i:s'),
         ]);
 
-        $this->request->shouldReceive('input')
-            ->andReturnUsing(function ($inputName) use ($accessToken) {
-                if ($inputName === 'user_id') {
-                    return $this->user->id();
-                } elseif ($inputName === 'access_token') {
-                    return $accessToken->token;
-                }
-            });
-
+        if (!$this->setRequestValue(userId: $this->user->id(), token: $accessToken->token)) {
+            exit;
+        }
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
 
         $this->assertSame($this->user->id(), $verifyTokenCommand->userId());
@@ -62,12 +56,29 @@ class VerifyTokenCommandTest extends TestCase
      */
     public function ユーザーID、トークンがリクエストに含まれていない場合nullを返すこと(): void
     {
-        $this->request->shouldReceive('input')
-            ->andReturn(null);
+        if (!$this->setRequestValue(userId: null, token: null)) {
+            exit;
+        }
 
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
 
         $this->assertNull($verifyTokenCommand->userId());
         $this->assertNull($verifyTokenCommand->accessToken());
+    }
+
+    private function setRequestValue(?int $userId, ?string $token): bool
+    {
+        $this->request->shouldReceive('input')
+            ->with('user_id')
+            ->andReturn($userId);
+
+        $this->request->shouldReceive('bearerToken')
+            ->andReturn($token);
+
+        if ($this->request->input('user_id') !== $userId || $this->request->bearerToken() !== $token) {
+            return false;
+        }
+
+        return true;
     }
 }

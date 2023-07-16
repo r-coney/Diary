@@ -11,7 +11,7 @@ class VerifyTokenCommand
     public function __construct(Request $request)
     {
         $this->userId = $request->input('user_id');
-        $this->accessToken = $request->input('access_token');
+        $this->accessToken = $request->bearerToken();
     }
 
     public function userId(): ?int

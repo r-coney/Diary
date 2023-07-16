@@ -60,15 +60,9 @@ class VerifyAccessTokenTest extends TestCase
      */
     public function 有効なユーザーIDとアクセストークンがリクエストされた場合、trueを返すこと(): void
     {
-        $this->request->shouldReceive('input')
-            ->andReturnUsing(function ($inputName) {
-                if ($inputName === 'user_id') {
-                    return $this->registeredUser->id();
-                } elseif ($inputName === 'access_token') {
-                    return $this->accessToken->token;
-                }
-            });
-
+        if (!$this->setRequestValue(userId: $this->registeredUser->id(), token: $this->accessToken->token)) {
+            exit;
+        }
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
 
@@ -80,16 +74,9 @@ class VerifyAccessTokenTest extends TestCase
      */
     public function 存在しないユーザーIDとアクセストークンがリクエストされた場合、例外を投げること(): void
     {
-        $this->request->shouldReceive('input')
-        ->andReturnUsing(function ($inputName) {
-            if ($inputName === 'user_id') {
-                // 存在しないユーザーを指定したいため、あり得ない数値にする
-                return 999999999;
-            } elseif ($inputName === 'access_token') {
-                return $this->accessToken->token;
-            }
-        });
-
+        if (!$this->setRequestValue(userId: 9999999, token: $this->accessToken->token)) {
+            exit;
+        }
         $this->expectException(AuthenticationException::class);
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
@@ -101,16 +88,9 @@ class VerifyAccessTokenTest extends TestCase
      */
     public function 有効なユーザーIDと存在しないアクセストークンがリクエストされた場合、例外を投げること(): void
     {
-        $this->request->shouldReceive('input')
-        ->andReturnUsing(function ($inputName) {
-            if ($inputName === 'user_id') {
-                return $this->registeredUser->id();
-            } elseif ($inputName === 'access_token') {
-                // 保存されていないトークンにしたいため、適当な文字列
-                return 'unsaved token';
-            }
-        });
-
+        if (!$this->setRequestValue(userId: $this->registeredUser->id(), token: 'unsaved token')) {
+            exit;
+        }
         $this->expectException(AuthenticationException::class);
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
@@ -124,18 +104,28 @@ class VerifyAccessTokenTest extends TestCase
     {
         $this->accessToken->expires_at = date('Y-m-d', strtotime('-1 day'));
         $this->accessTokenRepository->save($this->accessToken);
-        $this->request->shouldReceive('input')
-            ->andReturnUsing(function ($inputName) {
-                if ($inputName === 'user_id') {
-                    return $this->registeredUser->id();
-                } elseif ($inputName === 'access_token') {
-                    return $this->accessToken->token;
-                }
-            });
-
+        if (!$this->setRequestValue($this->registeredUser->id(), $this->accessToken->token)) {
+            exit;
+        }
         $this->expectException(AuthenticationException::class);
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
         $verifyAccessToken($verifyTokenCommand);
+    }
+
+    private function setRequestValue(?int $userId, ?string $token): bool
+    {
+        $this->request->shouldReceive('input')
+            ->with('user_id')
+            ->andReturn($userId);
+
+        $this->request->shouldReceive('bearerToken')
+            ->andReturn($token);
+
+        if ($this->request->input('user_id') !== $userId || $this->request->bearerToken() !== $token) {
+            return false;
+        }
+
+        return true;
     }
 }

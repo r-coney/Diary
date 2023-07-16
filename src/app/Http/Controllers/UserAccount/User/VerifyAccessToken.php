@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyTokenCommand;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyAccessTokenInterface;
 
-class VerifyAccessTokenController extends Controller
+class VerifyAccessToken extends Controller
 {
     private VerifyAccessTokenInterface $verifyAccessToken;
 
