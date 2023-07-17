@@ -62,7 +62,7 @@ class EditTest extends TestCase
         $editedUser = $this->userRepository->find(new Id($user->id()));
         $this->assertSame($editCommand->newName(), $editedUser->name());
         $this->assertSame($editCommand->newEmail(), $editedUser->email());
-        $this->assertTrue($editedUser->verifyPassword($this->encryptor, $editCommand->newPassword()));
+        $this->assertTrue($editedUser->verifyPassword($this->encryptor, new Password($editCommand->newPassword())));
     }
 
     /**

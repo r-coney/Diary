@@ -30,7 +30,7 @@ class Edit implements EditInterface
             $user = DB::transaction(function () use ($command) {
                 $user = $this->userRepository->find(new Id($command->userId()));
 
-                if (!$user->verifyPassword($this->encryptor, $command->currentPassword())) {
+                if (!$user->verifyPassword($this->encryptor, new Password($command->currentPassword()))) {
                     throw new CanNotEditUserException('パスワードが一致しません');
                 }
 
