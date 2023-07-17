@@ -13,6 +13,8 @@ use App\UserAccount\UseCase\User\GetDetail\GetDetail as GetUserDetail;
 use App\UserAccount\UseCase\User\GetDetail\GetDetailInterface as GetUserDetailInterface;
 use App\UserAccount\UseCase\User\GetList\GetListInterface as GetUserListInterface;
 use App\UserAccount\UseCase\User\GetList\GetList as GetUserList;
+use App\UserAccount\UseCase\User\Logout\Logout;
+use App\UserAccount\UseCase\User\Logout\LogoutInterface;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyAccessToken;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyAccessTokenInterface;
 
@@ -29,6 +31,7 @@ class ApplicationServiceProvider extends ServiceProvider
         $this->app->bind(EditUserInterface::class, EditUser::class);
         $this->app->bind(DeleteUserInterface::class, DeleteUser::class);
         $this->app->bind(VerifyAccessTokenInterface::class, VerifyAccessToken::class);
+        $this->app->bind(LogoutInterface::class, Logout::class);
     }
 
     /**
