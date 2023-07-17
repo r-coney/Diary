@@ -227,7 +227,7 @@ class UserTest extends TestCase
             new DateTime()
         );
 
-        $this->assertTrue($user->verifyPassword($this->encryptor, $password->value()));
+        $this->assertTrue($user->verifyPassword($this->encryptor, new Password($password->value())));
     }
 
     /**

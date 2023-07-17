@@ -11,16 +11,16 @@ class VerifyAccessToken implements VerifyAccessTokenInterface
 {
     private UserRepositoryInterface $userRepository;
     private AccessTokenRepositoryInterface $accessTokenRepository;
-    private AccessTokenServiceInterface $accessToeknService;
+    private AccessTokenServiceInterface $accessTokenService;
 
     public function __construct(
         UserRepositoryInterface $userRepository,
         AccessTokenRepositoryInterface $accessTokenRepository,
-        AccessTokenServiceInterface $accessToeknService
+        AccessTokenServiceInterface $accessTokenService
     ) {
         $this->userRepository = $userRepository;
         $this->accessTokenRepository = $accessTokenRepository;
-        $this->accessToeknService = $accessToeknService;
+        $this->accessTokenService = $accessTokenService;
     }
 
     public function __invoke(VerifyTokenCommand $command): bool
@@ -35,7 +35,7 @@ class VerifyAccessToken implements VerifyAccessTokenInterface
             throw new AuthenticationException('AccessToken not found.');
         }
 
-        if (!$accessToken->verify(accessTokenService: $this->accessToeknService, requestedToken: $command->accessToken())) {
+        if (!$accessToken->verify(accessTokenService: $this->accessTokenService, requestedToken: $command->accessToken())) {
             throw new AuthenticationException('Invalid access token.');
         }
 
