@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyTokenCommand;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyAccessTokenInterface;
+use Illuminate\Auth\AuthenticationException;
 
 class VerifyAccessToken extends Controller
 {
@@ -27,12 +28,18 @@ class VerifyAccessToken extends Controller
                 'message' => 'Authentication Success',
             ];
             $statusCode = 200;
-        } catch (Exception $e) {
+        } catch (AuthenticationException $e) {
             $response = [
                 'status' => 'error',
                 'message' => $e->getMessage(),
             ];
             $statusCode = 401;
+        } catch (Exception $e) {
+            $response = [
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ];
+            $statusCode = 500;
         }
 
         return response()->json(data: $response, status: $statusCode);
