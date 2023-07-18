@@ -16,9 +16,12 @@ class AccessToken extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'user_id',
         'token',
         'expires_at',
+        'created_at',
+        'updated_at',
     ];
 
     /**
