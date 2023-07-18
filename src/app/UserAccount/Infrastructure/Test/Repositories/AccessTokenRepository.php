@@ -56,7 +56,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         return null;
     }
 
-    public function save(AccessToken $accessToken): void
+    public function save(AccessToken $accessToken): ?AccessToken
     {
         if (is_null($accessToken->id)) {
             $this->currentId++;
@@ -77,5 +77,24 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             'created_at' => $accessToken->created_at,
             'updated_at' => $accessToken->updated_at,
         ];
+
+        return $accessToken;
+    }
+
+    public function delete(AccessToken $accessToken): bool
+    {
+        $isDeleted = false;
+        foreach ($this->store as $index => $entity) {
+            if ($accessToken->id === $entity->id) {
+                unset($this->store[$index]);
+                $isDeleted = true;
+            }
+        }
+
+        if (!$isDeleted) {
+            return false;
+        }
+
+        return true;
     }
 }

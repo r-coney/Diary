@@ -26,7 +26,15 @@ interface AccessTokenRepositoryInterface
      * アクセストークンを保存
      *
      * @param AccessToken $accessToken
-     * @return void
+     * @return ?AccessToken
      */
-    public function save(AccessToken $accessToken): void;
+    public function save(AccessToken $accessToken): ?AccessToken;
+
+    /**
+     * アクセストークンを削除
+     *
+     * @param AccessToken $accessToken
+     * @return bool
+     */
+    public function delete(AccessToken $accessToken): bool;
 }

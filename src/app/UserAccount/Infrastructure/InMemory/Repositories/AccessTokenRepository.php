@@ -18,7 +18,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         return $this->store;
     }
 
-    public function save(AccessToken $accessToken): void
+    public function save(AccessToken $accessToken): ?AccessToken
     {
         $store = $this->store();
         foreach ($store as $index => $entity) {
@@ -35,6 +35,8 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         ];
 
         Cache::put('accessTokens', $store);
+
+        return $accessToken;
     }
 
     public function find(int $id): ?AccessToken
@@ -67,5 +69,22 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         }
 
         return null;
+    }
+
+    public function delete(AccessToken $accessToken): bool
+    {
+        $isDeleted = false;
+        foreach ($this->store as $index => $entity) {
+            if ($accessToken->id === $entity->id) {
+                unset($this->store[$index]);
+                $isDeleted = true;
+            }
+        }
+
+        if (!$isDeleted) {
+            return false;
+        }
+
+        return true;
     }
 }
