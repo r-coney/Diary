@@ -55,5 +55,6 @@ Route::prefix('/')->name('userAccount.')->namespace('App\Http\Controllers\UserAc
         Route::get('/', 'Index')->name('index');
         Route::post('/login', 'Login')->name('login');
         Route::post('/verify-access-token', 'VerifyAccessToken')->name('verifyAccessToken');
+        Route::post('/logout', 'Logout')->name('logout');
     });
 });
