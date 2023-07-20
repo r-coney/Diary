@@ -19,14 +19,7 @@ class Store extends Controller
 
     public function __invoke(Request $request)
     {
-        $registerCommand = new RegisterCommand(
-            $request->input('name'),
-            $request->input('email'),
-            $request->input('password'),
-            $request->input('passwordConfirmation')
-        );
-
-        $response = ($this->register)($registerCommand);
+        $response = ($this->register)(new RegisterCommand($request));
 
         return redirect()->route('userAccount.user.detail', [
             'id' => $response['user']['id'],

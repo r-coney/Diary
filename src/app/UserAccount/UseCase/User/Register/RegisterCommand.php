@@ -1,7 +1,9 @@
 <?php
 namespace App\UserAccount\UseCase\User\Register;
 
+use App\UserAccount\Consts\UserConst;
 use App\UserAccount\UseCase\User\Register\RegisterCommandInterface;
+use Illuminate\Http\Request;
 
 class RegisterCommand implements RegisterCommandInterface
 {
@@ -11,15 +13,12 @@ class RegisterCommand implements RegisterCommandInterface
     private string $passwordConfirmation;
 
     public function __construct(
-        string $name,
-        string $email,
-        string $password,
-        string $passwordConfirmation
+        Request $request
     ) {
-        $this->name = $name;
-        $this->email = $email;
-        $this->password = $password;
-        $this->passwordConfirmation = $passwordConfirmation;
+        $this->name = $request->input(UserConst::INPUT_NAME);
+        $this->email = $request->input(UserConst::INPUT_EMAIL);
+        $this->password = $request->input(UserConst::INPUT_PASSWORD);
+        $this->passwordConfirmation = $request->input(UserConst::INPUT_PASSWORD_CONFIRMATION);
     }
 
     public function name(): string

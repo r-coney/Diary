@@ -26,6 +26,7 @@ class RegisterTest extends TestCase
     private UserRepositoryInterface $userRepository;
     private UserService $userService;
     private Encryptor $encryptor;
+    private RegisterCommand $registerCommand;
 
     public function setUp(): void
     {
@@ -34,6 +35,7 @@ class RegisterTest extends TestCase
         $this->userFactory = new InMemoryUserFactory($this->encryptor);
         $this->userRepository = new UserRepository($this->userFactory);
         $this->userService = new UserService($this->userRepository);
+        $this->registerCommand = $this->mock(RegisterCommand::class);
     }
 
     /**
@@ -41,14 +43,19 @@ class RegisterTest extends TestCase
      */
     public function ユーザーを新規登録できること(): void
     {
-        $command = new RegisterCommand('テスト', 'test@example.com', 'password1', 'password1');
+        $this->setRegisterCommandReturnValue(
+            name: 'test',
+            email: 'test@example.com',
+            password: 'password1',
+            passwordConfirmation: 'password1'
+        );
         $register = new Register($this->userFactory, $this->userService, $this->userRepository);
+        $register($this->registerCommand);
 
-        $register($command);
-        $registeredUser = $this->userRepository->findByEmail(new Email($command->email()));
+        $registeredUser = $this->userRepository->findByEmail(new Email($this->registerCommand->email()));
 
-        $this->assertSame($command->name(), $registeredUser->name());
-        $this->assertSame($command->email(), $registeredUser->email());
+        $this->assertSame($this->registerCommand->name(), $registeredUser->name());
+        $this->assertSame($this->registerCommand->email(), $registeredUser->email());
     }
 
     /**
@@ -58,9 +65,14 @@ class RegisterTest extends TestCase
     {
         $this->expectException(CanNotRegisterUserException::class);
 
-        $command = new RegisterCommand('テスト', 'test@example.com', 'password1', 'password2');
+        $this->setRegisterCommandReturnValue(
+            name: 'test',
+            email: 'test@example.com',
+            password: 'password1',
+            passwordConfirmation: 'password2'
+        );
         $register = new Register($this->userFactory, $this->userService, $this->userRepository);
-        $register($command);
+        $register($this->registerCommand);
     }
 
     /**
@@ -79,9 +91,41 @@ class RegisterTest extends TestCase
         );
 
         $this->userRepository->save($user);
-
-        $command = new RegisterCommand($user->name(), $user->email(), 'password1', 'password1');
+        $this->setRegisterCommandReturnValue(
+            name: $user->name(),
+            email: $user->email(),
+            password: $user->password(),
+            passwordConfirmation: $user->password()
+        );
         $register = new Register($this->userFactory, $this->userService, $this->userRepository);
-        $register($command);
+        $register($this->registerCommand);
+    }
+
+    /**
+     * RegisterCommandの返り値を設定
+     *
+     * @param string $name
+     * @param string $email
+     * @param string $password
+     * @param string $passwordConfirmation
+     * @return void
+     */
+    private function setRegisterCommandReturnValue(
+        string $name,
+        string $email,
+        string $password,
+        string $passwordConfirmation
+    ): void {
+        $this->registerCommand->shouldReceive('name')
+            ->andReturn($name);
+
+        $this->registerCommand->shouldReceive('email')
+            ->andReturn($email);
+
+        $this->registerCommand->shouldReceive('password')
+            ->andReturn($password);
+
+        $this->registerCommand->shouldReceive('passwordConfirmation')
+            ->andReturn($passwordConfirmation);
     }
 }
