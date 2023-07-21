@@ -7,7 +7,7 @@ use Tests\TestCase;
 use App\Models\AccessToken;
 use App\UserAccount\Infrastructure\Services\AccessTokenService;
 use App\UserAccount\Infrastructure\AccessTokenRepositoryInterface;
-use App\UserAccount\Infrastructure\Test\Repositories\AccessTokenRepository;
+use App\UserAccount\Infrastructure\InMemory\Repositories\AccessTokenRepository;
 use Domain\UserAccount\Models\User\User;
 use Domain\UserAccount\Models\User\Id as UserId;
 use Domain\UserAccount\Models\User\Name;

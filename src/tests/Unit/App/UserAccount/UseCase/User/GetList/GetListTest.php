@@ -3,11 +3,11 @@
 namespace Tests\Unit\App\UserAccount\UseCase\User\GetList;
 
 use DateTime;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
-use App\UserAccount\Infrastructure\Test\Queries\UserQueryService;
+use App\UserAccount\Infrastructure\InMemory\Queries\UserQueryService;
 use App\UserAccount\UseCase\User\QueryServiceInterface as UserQueryServiceInterface;
-use App\UserAccount\Infrastructure\Test\Repositories\UserRepository;
+use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository;
 use App\UserAccount\UseCase\User\GetList\GetList;
 use App\UserAccount\UseCase\User\GetList\GetListCommand;
 use App\UserAccount\UseCase\User\GetList\UserListQueryData;
