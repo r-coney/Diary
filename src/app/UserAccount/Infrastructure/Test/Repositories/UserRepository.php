@@ -14,10 +14,12 @@ class UserRepository implements RepositoryInterface
 {
     private array $store = [];
     private FactoryInterface $userFactory;
+    private int $currentId;
 
     public function __construct(
         FactoryInterface $userFactory
     ) {
+        $this->currentId = 0;
         $this->userFactory = $userFactory;
     }
 
@@ -64,13 +66,27 @@ class UserRepository implements RepositoryInterface
         return null;
     }
 
-    public function save(User $user): void
+    public function save(User $user): User
     {
+        if (is_null($user->id())) {
+            $this->currentId++;
+        }
+
         foreach ($this->store as $index => $entity) {
             if ($user->id() === $entity->id) {
                 unset($this->store[$index]);
             }
         }
+
+        $user = new User(
+            id: new Id($this->currentId),
+            name: new Name($user->name()),
+            email: new Email($user->email()),
+            password: new EncryptedPassword($user->password()),
+            registeredDateTime: new DateTime($user->registeredDateTime()),
+            updatedDateTime: $user->updatedDateTime() ?: null,
+            deletedDateTime: $user->deletedDateTime() ?: null
+        );
 
         $this->store[] = (object) [
             'id' => $user->id(),
@@ -81,5 +97,7 @@ class UserRepository implements RepositoryInterface
             'updated_at' => $user->updatedDateTime(),
             'deleted_at' => $user->deletedDateTime()
         ];
+
+        return $user;
     }
 }

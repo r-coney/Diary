@@ -2,14 +2,18 @@
 namespace App\UserAccount\UseCase\User\Register;
 
 use DateTime;
+use Exception;
+use RuntimeException;
+use InvalidArgumentException;
 use Illuminate\Support\Facades\DB;
+use App\Exceptions\UserAccount\User\UseCase\CanNotRegisterUserException;
+use Domain\UserAccount\Models\User\User;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\Email;
 use Domain\UserAccount\Models\User\Password;
 use Domain\UserAccount\Services\UserService;
 use Domain\UserAccount\Models\User\FactoryInterface;
 use Domain\UserAccount\Models\User\RepositoryInterface as UserRepositoryInterface;
-use App\Exceptions\UserAccount\User\UseCase\CanNotRegisterUserException;
 
 class Register implements RegisterInterface
 {
@@ -27,14 +31,14 @@ class Register implements RegisterInterface
         $this->userRepository = $userRepository;
     }
 
-    public function __invoke(RegisterCommandInterface $registerCommand): array
+    public function __invoke(RegisterCommandInterface $registerCommand): User
     {
         try {
             if ($registerCommand->password() !== $registerCommand->passwordConfirmation()) {
-                throw new CanNotRegisterUserException('パスワードが一致しません');
+                throw new InvalidArgumentException('Password does not match');
             }
 
-            $user = DB::transaction(function () use ($registerCommand) {
+            $registeredUser = DB::transaction(function () use ($registerCommand) {
                 $user = $this->userFactory->create(
                     new Name($registerCommand->name()),
                     new Email($registerCommand->email()),
@@ -43,32 +47,30 @@ class Register implements RegisterInterface
                 );
 
                 if ($this->UserService->exists($user)) {
-                    throw new CanNotRegisterUserException('ユーザーは既に存在しています');
+                    throw new InvalidArgumentException('Users already exist.');
                 }
 
-                $this->userRepository->save($user);
+                $registeredUser = $this->userRepository->save($user);
+                if (is_null($registeredUser)) {
+                    throw new RuntimeException('Failed to save user account.');
+                }
 
-                return $user;
+                return $registeredUser;
             });
 
-            $response = [
-                'status' => 'success',
-                'user' => [
-                    'id' => $user->id(),
-                    'name' => $user->name(),
-                    'email' => $user->email(),
-                    'registered_datetime' => $user->registeredDatetime(),
-                ],
-            ];
+            // $response = [
+            //     'status' => 'success',
+            //     'user' => [
+            //         'id' => $user->id(),
+            //         'name' => $user->name(),
+            //         'email' => $user->email(),
+            //         'registered_datetime' => $user->registeredDatetime(),
+            //     ],
+            // ];
         } catch (Exception $e) {
-            Log::error($e->getMessage());
-
-            $response = [
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ];
+            throw new CanNotRegisterUserException($e, 400);
         }
 
-        return $response;
+        return $registeredUser;
     }
 }

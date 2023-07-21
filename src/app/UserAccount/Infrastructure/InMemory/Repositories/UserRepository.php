@@ -7,6 +7,7 @@ use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\User;
 use Domain\UserAccount\Models\User\Email;
+use Domain\UserAccount\Models\User\Password;
 use Domain\UserAccount\Models\User\EncryptedPassword;
 use Domain\UserAccount\Models\User\FactoryInterface as UserFactoryInterface;
 use Domain\UserAccount\Models\User\RepositoryInterface as UserRepositoryInterface;
@@ -30,7 +31,7 @@ class UserRepository implements UserRepositoryInterface
         return $this->store;
     }
 
-    public function save(User $user): void
+    public function save(User $user): User
     {
         $store = $this->store();
 
@@ -39,6 +40,16 @@ class UserRepository implements UserRepositoryInterface
                 unset($store[$index]);
             }
         }
+
+        // $user = $this->userFactory->create(
+        //     name: new Name($user->name()),
+        //     email: new Email($user->email()),
+        //     password: new Password($user->password()),
+        //     registeredDateTime: $user->registeredDateTime() ? new DateTime($user->registeredDateTime()) : null,
+        //     updatedDateTime: $user->updatedDateTime() ? new DateTime($user->updatedDateTime()) : null,
+        //     deletedDateTime: $user->deletedDateTime() ? new Datetime($user->deletedDateTime()) : null,
+        //     id: $user->id() ? new Id($user->id()) : null
+        // );
 
         $store[] = (object) [
             'id' => $user->id(),
@@ -49,13 +60,14 @@ class UserRepository implements UserRepositoryInterface
             'updated_at' => $user->updatedDateTime(),
             'deleted_at' => $user->deletedDateTime()
         ];
-
         Cache::put('users', $store);
+
+        return $user;
     }
 
     public function find(Id $id): ?User
     {
-        foreach ($this->store as $entity) {
+        foreach ($this->store() as $entity) {
             if ($id->value() === $entity->id) {
                 return $this->userFactory->create(
                     new Name($entity->name),
@@ -74,7 +86,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function findByEmail(Email $email): ?User
     {
-        foreach ($this->store as $entity) {
+        foreach ($this->store() as $entity) {
             if ($email->value() === $entity->email && is_null($entity->deleted_at)) {
                 return $this->userFactory->create(
                     new Name($entity->name),

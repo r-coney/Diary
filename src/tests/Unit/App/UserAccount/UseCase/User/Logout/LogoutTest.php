@@ -9,7 +9,7 @@ use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Exceptions\UserAccount\User\UseCase\UserNotFoundException;
 use App\UserAccount\Infrastructure\AccessTokenRepositoryInterface;
-use App\UserAccount\Infrastructure\Test\Repositories\UserRepository;
+use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository;
 use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
 use App\UserAccount\Infrastructure\Test\Repositories\AccessTokenRepository;
 use App\UserAccount\UseCase\User\Logout\LogoutCommand;

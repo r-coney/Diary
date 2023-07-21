@@ -8,7 +8,7 @@ use Tests\TestCase;
 use App\UserAccount\UseCase\User\Edit\Edit;
 use App\UserAccount\UseCase\User\Edit\EditCommand;
 use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
-use App\UserAccount\Infrastructure\Test\Repositories\UserRepository;
+use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository;
 use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\Email;

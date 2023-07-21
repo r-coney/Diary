@@ -6,7 +6,7 @@ use DateTime;
 use Tests\TestCase;
 use App\UserAccount\UseCase\User\Delete\Delete;
 use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
-use App\UserAccount\Infrastructure\Test\Repositories\UserRepository;
+use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository;
 use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\Email;

@@ -6,7 +6,7 @@ use DateTime;
 use Tests\TestCase;
 use App\UserAccount\UseCase\User\Register\Register;
 use App\UserAccount\UseCase\User\Register\RegisterCommand;
-use App\UserAccount\Infrastructure\Test\Repositories\UserRepository;
+use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository;
 use App\Exceptions\UserAccount\User\UseCase\CanNotRegisterUserException;
 use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
 use Domain\UserAccount\Models\User\Id;
@@ -53,6 +53,24 @@ class RegisterTest extends TestCase
         $register($this->registerCommand);
 
         $registeredUser = $this->userRepository->findByEmail(new Email($this->registerCommand->email()));
+
+        $this->assertSame($this->registerCommand->name(), $registeredUser->name());
+        $this->assertSame($this->registerCommand->email(), $registeredUser->email());
+    }
+
+        /**
+     * @test
+     */
+    public function 登録したユーザーを返すこと(): void
+    {
+        $this->setRegisterCommandReturnValue(
+            name: 'test',
+            email: 'test@example.com',
+            password: 'password1',
+            passwordConfirmation: 'password1'
+        );
+        $register = new Register($this->userFactory, $this->userService, $this->userRepository);
+        $registeredUser = $register($this->registerCommand);
 
         $this->assertSame($this->registerCommand->name(), $registeredUser->name());
         $this->assertSame($this->registerCommand->email(), $registeredUser->email());

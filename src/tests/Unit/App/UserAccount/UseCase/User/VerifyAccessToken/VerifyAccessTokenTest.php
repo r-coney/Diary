@@ -10,7 +10,7 @@ use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
 use App\UserAccount\Infrastructure\Services\AccessTokenService;
 use App\UserAccount\Infrastructure\Services\AccessTokenServiceInterface;
 use App\UserAccount\Infrastructure\Test\Repositories\AccessTokenRepository;
-use App\UserAccount\Infrastructure\Test\Repositories\UserRepository;
+use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyAccessToken;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyTokenCommand;
 use Domain\UserAccount\Models\User\Id;
