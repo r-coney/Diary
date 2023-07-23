@@ -1,7 +1,8 @@
 <?php
 namespace App\UserAccount\UseCase\User\GetList;
 
-use App\UserAccount\UseCase\User\GetList\UserListQueryData;
+use Exception;
+use App\UserAccount\Result;
 use App\UserAccount\UseCase\User\QueryServiceInterface as UserQueryServiceInterface;
 
 class GetList implements GetListInterface
@@ -13,10 +14,14 @@ class GetList implements GetListInterface
         $this->userQueryService = $userQueryService;
     }
 
-    public function __invoke(GetListCommandInterface $command): UserListQueryData
+    public function __invoke(GetListCommandInterface $command): Result
     {
-        $userList = $this->userQueryService->getAll($command);
+        try {
+            $result = Result::ofValue($this->userQueryService->getAll($command));
+        } catch (Exception $e) {
+            $result = Result::ofError($e->getMessage());
+        }
 
-        return $userList;
+        return $result;
     }
 }
