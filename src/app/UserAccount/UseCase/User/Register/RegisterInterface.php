@@ -1,7 +1,7 @@
 <?php
 namespace App\UserAccount\UseCase\User\Register;
 
-use Domain\UserAccount\Models\User\User;
+use App\UserAccount\Result;
 
 interface RegisterInterface
 {
@@ -9,8 +9,7 @@ interface RegisterInterface
      * ユーザーアカウントを新規登録
      *
      * @param RegisterCommandInterface $registerCommand
-     * @throws CanNotRegisterUserException
-     * @return User
+     * @return Result
      */
-    public function __invoke(RegisterCommandInterface $registerCommand): User;
+    public function __invoke(RegisterCommandInterface $registerCommand): Result;
 }

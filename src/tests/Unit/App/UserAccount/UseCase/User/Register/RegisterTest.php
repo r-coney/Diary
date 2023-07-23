@@ -7,7 +7,6 @@ use Tests\TestCase;
 use App\UserAccount\UseCase\User\Register\Register;
 use App\UserAccount\UseCase\User\Register\RegisterCommand;
 use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository;
-use App\Exceptions\UserAccount\User\UseCase\CanNotRegisterUserException;
 use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
 use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
@@ -50,15 +49,16 @@ class RegisterTest extends TestCase
             passwordConfirmation: 'password1'
         );
         $register = new Register($this->userFactory, $this->userService, $this->userRepository);
-        $register($this->registerCommand);
+        $result = $register($this->registerCommand);
 
         $registeredUser = $this->userRepository->findByEmail(new Email($this->registerCommand->email()));
 
+        $this->assertFalse($result->hasError());
         $this->assertSame($this->registerCommand->name(), $registeredUser->name());
         $this->assertSame($this->registerCommand->email(), $registeredUser->email());
     }
 
-        /**
+    /**
      * @test
      */
     public function 登録したユーザーを返すこと(): void
@@ -70,7 +70,8 @@ class RegisterTest extends TestCase
             passwordConfirmation: 'password1'
         );
         $register = new Register($this->userFactory, $this->userService, $this->userRepository);
-        $registeredUser = $register($this->registerCommand);
+        $result = $register($this->registerCommand);
+        $registeredUser = $result->value();
 
         $this->assertSame($this->registerCommand->name(), $registeredUser->name());
         $this->assertSame($this->registerCommand->email(), $registeredUser->email());
@@ -81,8 +82,6 @@ class RegisterTest extends TestCase
      */
     public function パスワードと確認用パスワードが一致しない場合、登録に失敗すること(): void
     {
-        $this->expectException(CanNotRegisterUserException::class);
-
         $this->setRegisterCommandReturnValue(
             name: 'test',
             email: 'test@example.com',
@@ -90,7 +89,9 @@ class RegisterTest extends TestCase
             passwordConfirmation: 'password2'
         );
         $register = new Register($this->userFactory, $this->userService, $this->userRepository);
-        $register($this->registerCommand);
+        $result = $register($this->registerCommand);
+
+        $this->assertTrue($result->hasError());
     }
 
     /**
@@ -98,8 +99,6 @@ class RegisterTest extends TestCase
      */
     public function すでに使用されたメールアドレスでユーザー登録した場合、登録に失敗すること(): void
     {
-        $this->expectException(CanNotRegisterUserException::class);
-
         $user = new User(
             new Id(1),
             new Name('テスト'),
@@ -116,7 +115,9 @@ class RegisterTest extends TestCase
             passwordConfirmation: $user->password()
         );
         $register = new Register($this->userFactory, $this->userService, $this->userRepository);
-        $register($this->registerCommand);
+        $result = $register($this->registerCommand);
+
+        $this->assertTrue($result->hasError());
     }
 
     /**

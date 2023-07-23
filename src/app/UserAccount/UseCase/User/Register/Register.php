@@ -1,19 +1,19 @@
 <?php
 namespace App\UserAccount\UseCase\User\Register;
 
+use App\Exceptions\DiaryApp\Diary\UseCase\CanNotCreateDiaryException;
 use DateTime;
 use Exception;
-use RuntimeException;
-use InvalidArgumentException;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\UserAccount\User\UseCase\CanNotRegisterUserException;
-use Domain\UserAccount\Models\User\User;
+use App\UserAccount\Result;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\Email;
 use Domain\UserAccount\Models\User\Password;
 use Domain\UserAccount\Services\UserService;
 use Domain\UserAccount\Models\User\FactoryInterface;
 use Domain\UserAccount\Models\User\RepositoryInterface as UserRepositoryInterface;
+use InvalidArgumentException;
 
 class Register implements RegisterInterface
 {
@@ -31,11 +31,11 @@ class Register implements RegisterInterface
         $this->userRepository = $userRepository;
     }
 
-    public function __invoke(RegisterCommandInterface $registerCommand): User
+    public function __invoke(RegisterCommandInterface $registerCommand): Result
     {
         try {
             if ($registerCommand->password() !== $registerCommand->passwordConfirmation()) {
-                throw new InvalidArgumentException('Password does not match');
+                throw new InvalidArgumentException('Password does not match.');
             }
 
             $registeredUser = DB::transaction(function () use ($registerCommand) {
@@ -52,25 +52,20 @@ class Register implements RegisterInterface
 
                 $registeredUser = $this->userRepository->save($user);
                 if (is_null($registeredUser)) {
-                    throw new RuntimeException('Failed to save user account.');
+                    throw new CanNotRegisterUserException('Failed to save user account.');
                 }
 
                 return $registeredUser;
             });
 
-            // $response = [
-            //     'status' => 'success',
-            //     'user' => [
-            //         'id' => $user->id(),
-            //         'name' => $user->name(),
-            //         'email' => $user->email(),
-            //         'registered_datetime' => $user->registeredDatetime(),
-            //     ],
-            // ];
+            $result = Result::ofValue($registeredUser);
+        } catch (InvalidArgumentException $e) {
+            $result = Result::ofError($e->getMessage());
         } catch (Exception $e) {
-            throw new CanNotRegisterUserException($e, 400);
+            Log::error($e->getMessage());
+            $result = Result::ofError($e->getMessage());
         }
 
-        return $registeredUser;
+        return $result;
     }
 }

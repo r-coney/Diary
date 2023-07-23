@@ -26,8 +26,12 @@ class Store extends Controller
     public function __invoke(Request $request)
     {
         try {
-            $registeredUser = ($this->register)(new RegisterCommand($request));
+            $result = ($this->register)(new RegisterCommand($request));
+            if ($result->hasError()) {
+                throw new CanNotRegisterUserException($result->error());
+            }
 
+            $registeredUser = $result->value();
             $response = [
                 'status' => 'success',
                 'user' => [
