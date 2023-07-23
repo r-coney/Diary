@@ -18,10 +18,7 @@ class Index extends Controller
 
     public function __invoke(Request $request)
     {
-        $userListData = ($this->getList)(new GetListCommand(
-            $request->query('page', 1),
-            config('UserAccount.constants.userListPerPage')
-        ));
+        $userListData = ($this->getList)(new GetListCommand($request));
 
         return view('user_account.user.index', ['userList' => $userListData->userList()]);
     }
