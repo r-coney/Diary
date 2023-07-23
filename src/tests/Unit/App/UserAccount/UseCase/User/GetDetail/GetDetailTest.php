@@ -20,7 +20,6 @@ class GetDetailTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
     }
 
@@ -29,7 +28,6 @@ class GetDetailTest extends TestCase
      */
     public function ユーザーの詳細情報を取得できること(): void
     {
-        // ユーザーを作成
         $user = new User(
             new Id(1),
             new Name('test'),
@@ -37,12 +35,13 @@ class GetDetailTest extends TestCase
             new EncryptedPassword('password'),
             new DateTime()
         );
-
         $this->userRepository->method('find')->willReturn($user);
 
         $getDetail = new GetDetail($this->userRepository);
-        $userData = $getDetail(new Id($user->id()));
+        $result = $getDetail(new Id($user->id()));
+        $userData = $result->value();
 
+        $this->assertFalse($result->hasError());
         $this->assertSame($user->id(), $userData->id);
         $this->assertSame($user->name(), $userData->name);
         $this->assertSame($user->email(), $userData->email);
@@ -55,13 +54,13 @@ class GetDetailTest extends TestCase
     /**
      * @test
      */
-    public function ユーザーの詳細情報が取得できなかった場合、例外をthrowすること(): void
+    public function ユーザーの詳細情報が取得できなかった場合、エラーのResultクラスを返すこと(): void
     {
-        $this->expectException(UserNotFoundException::class);
-
         $this->userRepository->method('find')->willReturn(null);
 
         $getDetail = new GetDetail($this->userRepository);
-        $getDetail(new Id(1));
+        $result = $getDetail(new Id(1));
+
+        $this->assertTrue($result->hasError());
     }
 }

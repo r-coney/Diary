@@ -5,6 +5,7 @@ namespace App\Http\Controllers\UserAccount\User;
 use App\Http\Controllers\Controller;
 use App\UserAccount\UseCase\User\GetDetail\GetDetailInterface;
 use Domain\UserAccount\Models\User\Id;
+use Illuminate\Http\JsonResponse;
 
 class Detail extends Controller
 {
@@ -15,12 +16,36 @@ class Detail extends Controller
         $this->getDetail = $getDetail;
     }
 
-    public function __invoke(int $id)
+    /**
+     * ユーザーの詳細情報を取得
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function __invoke(int $id): JsonResponse
     {
-        $userData = ($this->getDetail)(new Id($id));
+        $result = ($this->getDetail)(new Id($id));
+        if (!$result->hasError()) {
+            $userData = $result->value();
+            $response = [
+                'status' => 'success',
+                'user' => [
+                    'name' => $userData->name,
+                    'email' => $userData->email,
+                    'registeredDateTime' => $userData->registeredDateTime,
+                    'updatedDateTime' => $userData->updatedDateTime,
+                    'deletedDateTime' => $userData->deletedDateTime,
+                ],
+            ];
+            $statusCode = 200;
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => $result->error(),
+            ];
+            $statusCode = 400;
+        }
 
-        return view('user_account.user.detail', [
-            'userData' => $userData,
-        ]);
+        return response()->json($response, $statusCode);
     }
 }
