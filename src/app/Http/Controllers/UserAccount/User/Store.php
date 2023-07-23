@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\UserAccount\UseCase\User\Register\RegisterCommand;
 use App\UserAccount\UseCase\User\Register\RegisterInterface;
+use Illuminate\Http\JsonResponse;
 
 class Store extends Controller
 {
@@ -22,15 +23,12 @@ class Store extends Controller
      * ユーザーアカウントを新規登録
      *
      * @param Request $request
+     * @return JsonResponse
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): JsonResponse
     {
-        try {
-            $result = ($this->register)(new RegisterCommand($request));
-            if ($result->hasError()) {
-                throw new CanNotRegisterUserException($result->error());
-            }
-
+        $result = ($this->register)(new RegisterCommand($request));
+        if (!$result->hasError()) {
             $registeredUser = $result->value();
             $response = [
                 'status' => 'success',
@@ -42,10 +40,10 @@ class Store extends Controller
                 ],
             ];
             $statusCode = 200;
-        } catch (CanNotRegisterUserException $e) {
+        } else {
             $response = [
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => $result->error(),
             ];
             $statusCode = 400;
         }
