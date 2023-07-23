@@ -5,7 +5,6 @@ namespace Tests\Unit\App\UserAccount\UseCase\User\GetDetail;
 use Tests\TestCase;
 use DateTime;
 use App\UserAccount\UseCase\User\GetDetail\GetDetail;
-use App\Exceptions\UserAccount\User\UseCase\UserNotFoundException;
 use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\User;
@@ -29,11 +28,11 @@ class GetDetailTest extends TestCase
     public function ユーザーの詳細情報を取得できること(): void
     {
         $user = new User(
-            new Id(1),
-            new Name('test'),
-            new Email('test@example.com'),
-            new EncryptedPassword('password'),
-            new DateTime()
+            id: new Id(1),
+            name: new Name('test'),
+            email: new Email('test@example.com'),
+            password: new EncryptedPassword('password'),
+            registeredDateTime: new DateTime()
         );
         $this->userRepository->method('find')->willReturn($user);
 

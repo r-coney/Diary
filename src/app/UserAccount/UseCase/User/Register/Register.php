@@ -40,10 +40,10 @@ class Register implements RegisterInterface
 
             $registeredUser = DB::transaction(function () use ($registerCommand) {
                 $user = $this->userFactory->create(
-                    new Name($registerCommand->name()),
-                    new Email($registerCommand->email()),
-                    new Password($registerCommand->password()),
-                    new DateTime(),
+                    name: new Name($registerCommand->name()),
+                    email: new Email($registerCommand->email()),
+                    password: new Password($registerCommand->password()),
+                    registeredDateTime: new DateTime(),
                 );
 
                 if ($this->UserService->exists($user)) {
