@@ -11,7 +11,7 @@ class EditCommand implements EditCommandInterface
     private ?string $newEmail;
     private ?string $newPassword;
     private ?string $newPasswordConfirmation;
-    private string $currentPassword;
+    private ?string $currentPassword;
 
     public function __construct(
         int $userId,
@@ -65,7 +65,7 @@ class EditCommand implements EditCommandInterface
         return $this->newPasswordConfirmation;
     }
 
-    public function currentPassword(): string
+    public function currentPassword(): ?string
     {
         return $this->currentPassword;
     }

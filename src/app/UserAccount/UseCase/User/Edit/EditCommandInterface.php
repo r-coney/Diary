@@ -43,5 +43,5 @@ interface EditCommandInterface
      *
      * @return string
      */
-    public function currentPassword(): string;
+    public function currentPassword(): ?string;
 }

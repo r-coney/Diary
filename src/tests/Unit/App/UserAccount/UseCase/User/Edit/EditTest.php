@@ -10,7 +10,6 @@ use App\UserAccount\Consts\UserConst;
 use App\UserAccount\UseCase\User\Edit\EditCommand;
 use App\UserAccount\UseCase\User\Edit\Edit;
 use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
-use App\Exceptions\UserAccount\User\UseCase\CanNotEditUserException;
 use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository;
 use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
@@ -65,9 +64,11 @@ class EditTest extends TestCase
 
         $editCommand = new EditCommand($this->user->id(), $this->request);
         $edit = new Edit($this->userRepository, $this->encryptor);
-        $edit($editCommand);
+        $result = $edit($editCommand);
 
         $editedUser = $this->userRepository->find(new Id($this->user->id()));
+
+        $this->assertFalse($result->hasError());
         $this->assertSame($editCommand->newName(), $editedUser->name());
         $this->assertSame($editCommand->newEmail(), $editedUser->email());
         $this->assertTrue($editedUser->verifyPassword($this->encryptor, new Password($editCommand->newPassword())));
@@ -78,8 +79,6 @@ class EditTest extends TestCase
      */
     public function パスワードが一致しない場合、ユーザーの編集に失敗すること(): void
     {
-        $this->expectException(CanNotEditUserException::class);
-
         if (!$this->setRequestValue(
             name: 'edited name',
             email: 'edited@example.com',
@@ -92,7 +91,9 @@ class EditTest extends TestCase
 
         $editCommand = new EditCommand($this->user->id(), $this->request);
         $edit = new Edit($this->userRepository, $this->encryptor);
-        $edit($editCommand);
+        $result = $edit($editCommand);
+
+        $this->assertTrue($result->hasError());
     }
 
     /**
@@ -140,10 +141,10 @@ class EditTest extends TestCase
         if ($this->request->input(UserConst::INPUT_NEW_PASSWORD) !== $password) {
             return false;
         }
-        if ($this->request->input(UserConst::INPUT_NEW_PASSWORD_CONFIRMATION !== $passwordConfirmation)) {
+        if ($this->request->input(UserConst::INPUT_NEW_PASSWORD_CONFIRMATION) !== $passwordConfirmation) {
             return false;
         }
-        if ($this->request->input(UserConst::INPUT_CURRENT_PASSWORD !== $currentPassword)) {
+        if ($this->request->input(UserConst::INPUT_CURRENT_PASSWORD) !== $currentPassword) {
             return false;
         }
 
