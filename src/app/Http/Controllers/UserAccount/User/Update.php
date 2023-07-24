@@ -18,16 +18,7 @@ class Update extends Controller
 
     public function __invoke(Request $request, int $id)
     {
-        ($this->edit)(
-            new EditCommand(
-                $id,
-                $request->input('newName'),
-                $request->input('newEmail'),
-                $request->input('newPassword'),
-                $request->input('newPasswordConfirmation'),
-                $request->input('currentPassword')
-            )
-        );
+        ($this->edit)(new EditCommand($id, $request));
 
         return redirect()->route('userAccount.user.detail', ['id' => $id]);
     }
