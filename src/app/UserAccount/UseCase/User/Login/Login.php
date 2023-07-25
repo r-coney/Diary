@@ -5,6 +5,7 @@ use Exception;
 use InvalidArgumentException;
 use Illuminate\Support\Facades\DB;
 use App\UserAccount\Infrastructure\Services\AccessTokenServiceInterface;
+use App\UserAccount\Result;
 use Domain\UserAccount\Models\User\Password;
 use Domain\UserAccount\Models\User\Email;
 use Domain\UserAccount\Models\User\Encryptor;
@@ -26,7 +27,7 @@ class Login implements LoginInterface
         $this->accessTokenService = $accessTokenService;
     }
 
-    public function __invoke(LoginCommandInterface $command): array
+    public function __invoke(LoginCommandInterface $command): Result
     {
         try {
             $user = $this->userRepository->findByEmail(new Email($command->email()));
@@ -34,7 +35,7 @@ class Login implements LoginInterface
                 throw new InvalidArgumentException('User not Found.');
             }
 
-            if (!$user->verifyPassword($this->encryptor, new Password($command->password()))) {
+            if (!$user->verifyPassword(encryptor: $this->encryptor, password: new Password($command->password()))) {
                 throw new InvalidArgumentException('Authentication Failure.');
             }
 
@@ -42,23 +43,11 @@ class Login implements LoginInterface
                 return $this->accessTokenService->generate($user);
             });
 
-            $response = [
-                'status' => 'success',
-                'user' => [
-                    'id' => $user->id(),
-                    'name' => $user->name(),
-                    'email' => $user->email(),
-                ],
-                'token_type' => 'Bearer',
-                'access_token' => $accessToken->token
-            ];
+            $result = Result::ofValue(new LoggedInUserData(user: $user, accessToken: $accessToken));
         } catch (Exception $e) {
-            $response = [
-                'status' => 'error',
-                'error' => $e->getMessage(),
-            ];
+            $result = Result::ofError($e->getMessage());
         }
 
-        return $response;
+        return $result;
     }
 }

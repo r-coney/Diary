@@ -44,11 +44,11 @@ class LoginTest extends TestCase
         $email = 'test@example.com';
         $password = new Password('password1');
         $user = new User(
-            new Id(1),
-            new Name('test'),
-            new Email($email),
-            $password->encrypt($this->encryptor),
-            new DateTime()
+            id: new Id(1),
+            name: new Name('test'),
+            email: new Email($email),
+            password: $password->encrypt($this->encryptor),
+            registeredDateTime: new DateTime()
         );
 
         $this->userRepository->method('findByEmail')->willReturn($user);
@@ -58,62 +58,63 @@ class LoginTest extends TestCase
             'expires_at' => '5000-12-30 12:00:00',
         ]);
         $this->accessTokenService->method('generate')->willReturn($accessToken);
-        if (!$this->setRequestValue($email, $password->value())) {
+        if (!$this->setRequestValue(email: $email, password: $password->value())) {
             throw new RuntimeException('Failed to set request value.');
         };
 
         $command = new LoginCommand($this->request);
         $login = new Login($this->userRepository, $this->encryptor, $this->accessTokenService);
 
-        $response = $login($command);
+        $result = $login($command);
+        $loggedInUserData = $result->value();
 
-        $this->assertSame($accessToken->token, $response['access_token']);
+        $this->assertSame($accessToken->token, $loggedInUserData->accessToken);
     }
 
     /**
      * @test
      */
-    public function リクエストユーザーが存在しない場合、エラーのレスポンスを返すこと(): void
+    public function リクエストユーザーが存在しない場合、エラーの結果を返すこと(): void
     {
         $this->userRepository->method('findByEmail')->willReturn(null);
-        if (!$this->setRequestValue('test@example.com', 'Password1')) {
+        if (!$this->setRequestValue(email: 'test@example.com', password: 'Password1')) {
             throw new RuntimeException('Failed to set request value.');
         }
 
         $command = new LoginCommand($this->request);
         $login = new Login($this->userRepository, $this->encryptor, $this->accessTokenService);
 
-        $response = $login($command);
+        $result = $login($command);
 
-        $this->assertSame('error', $response['status']);
+        $this->assertTrue($result->hasError());
     }
 
     /**
      * @test
      */
-    public function パスワードが一致しない場合、エラーのレスポンスを返すこと(): void
+    public function パスワードが一致しない場合、エラーの結果を返すこと(): void
     {
         $email = 'test@example.com';
         $password = new Password('password1');
         $user = new User(
-            new Id(1),
-            new Name('test'),
-            new Email($email),
-            $password->encrypt($this->encryptor),
-            new DateTime()
+            id: new Id(1),
+            name: new Name('test'),
+            email: new Email($email),
+            password: $password->encrypt($this->encryptor),
+            registeredDateTime: new DateTime()
         );
 
         $this->userRepository->method('findByEmail')->willReturn($user);
-        if (!$this->setRequestValue($email, 'otherPassword1')) {
+        if (!$this->setRequestValue(email: $email, password: 'otherPassword1')) {
             throw new RuntimeException('Failed to set request value.');
         }
 
         $command = new LoginCommand($this->request);
         $login = new Login($this->userRepository, $this->encryptor, $this->accessTokenService);
 
-        $response = $login($command);
+        $result = $login($command);
 
-        $this->assertSame('error', $response['status']);
+        $this->assertTrue($result->hasError());
     }
 
     /**
