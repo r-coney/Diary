@@ -17,6 +17,29 @@ class Delete extends Controller
 
     public function __invoke(int $id)
     {
-        ($this->delete)(new Id($id));
+        $result = ($this->delete)(new Id($id));
+        if (!$result->hasError()) {
+            $deletedUser = $result->value();
+            $response = [
+                'status' => 'success',
+                'deletedUser' => [
+                    'id' => $deletedUser->id(),
+                    'name' => $deletedUser->name(),
+                    'email' => $deletedUser->email(),
+                    'registered_datetime' => $deletedUser->registeredDatetime(),
+                    'updatedDateTime' => $deletedUser->updatedDateTime(),
+                    'deletedDateTime' => $deletedUser->deletedDateTime(),
+                ],
+            ];
+            $statusCode = 200;
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => $result->error(),
+            ];
+            $statusCode = 400;
+        }
+
+        return response()->json($response, $statusCode);
     }
 }
