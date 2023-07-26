@@ -1,11 +1,13 @@
 <?php
 namespace App\UserAccount\UseCase\User\VerifyAccessToken;
 
+use Exception;
+use Illuminate\Auth\AuthenticationException;
 use App\UserAccount\Infrastructure\AccessTokenRepositoryInterface;
 use App\UserAccount\Infrastructure\Services\AccessTokenServiceInterface;
+use App\UserAccount\Result;
 use Domain\UserAccount\Models\User\RepositoryInterface as UserRepositoryInterface;
 use Domain\UserAccount\Models\User\Id as UserId;
-use Illuminate\Auth\AuthenticationException;
 
 class VerifyAccessToken implements VerifyAccessTokenInterface
 {
@@ -23,22 +25,28 @@ class VerifyAccessToken implements VerifyAccessTokenInterface
         $this->accessTokenService = $accessTokenService;
     }
 
-    public function __invoke(VerifyTokenCommand $command): bool
+    public function __invoke(VerifyTokenCommand $command): Result
     {
-        $user = $this->userRepository->find(id: new UserId($command->userId()));
-        if (is_null($user)) {
-            throw new AuthenticationException('User not found.');
+        try {
+            $user = $this->userRepository->find(id: new UserId($command->userId()));
+            if (is_null($user)) {
+                throw new AuthenticationException('User not found.');
+            }
+
+            $accessToken = $this->accessTokenRepository->findByUserId(new UserId($user->id()));
+            if (is_null($accessToken)) {
+                throw new AuthenticationException('AccessToken not found.');
+            }
+
+            if (!$accessToken->verify(accessTokenService: $this->accessTokenService, requestedToken: $command->accessToken())) {
+                throw new AuthenticationException('Invalid access token.');
+            }
+
+            $result = Result::ofValue(true);
+        } catch (Exception $e) {
+            $result = Result::ofError($e->getMessage());
         }
 
-        $accessToken = $this->accessTokenRepository->findByUserId(new UserId($user->id()));
-        if (is_null($accessToken)) {
-            throw new AuthenticationException('AccessToken not found.');
-        }
-
-        if (!$accessToken->verify(accessTokenService: $this->accessTokenService, requestedToken: $command->accessToken())) {
-            throw new AuthenticationException('Invalid access token.');
-        }
-
-        return true;
+        return $result;
     }
 }
