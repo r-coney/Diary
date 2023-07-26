@@ -77,7 +77,6 @@ class VerifyAccessTokenTest extends TestCase
         if (!$this->setRequestValue(userId: 9999999, token: $this->accessToken->token)) {
             exit;
         }
-        // $this->expectException(AuthenticationException::class);
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
         $result = $verifyAccessToken($verifyTokenCommand);
@@ -93,7 +92,6 @@ class VerifyAccessTokenTest extends TestCase
         if (!$this->setRequestValue(userId: $this->registeredUser->id(), token: 'unsaved token')) {
             exit;
         }
-        // $this->expectException(AuthenticationException::class);
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
         $result = $verifyAccessToken($verifyTokenCommand);
@@ -111,7 +109,6 @@ class VerifyAccessTokenTest extends TestCase
         if (!$this->setRequestValue($this->registeredUser->id(), $this->accessToken->token)) {
             exit;
         }
-        // $this->expectException(AuthenticationException::class);
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
         $result = $verifyAccessToken($verifyTokenCommand);
