@@ -6,7 +6,7 @@ use DateTime;
 use Tests\TestCase;
 use App\UserAccount\UseCase\User\Delete\Delete;
 use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
-use App\UserAccount\Infrastructure\Test\Repositories\UserRepository;
+use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository;
 use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\Email;
@@ -29,6 +29,15 @@ class DeleteTest extends TestCase
         $this->encryptor = new BcryptEncryptor();
         $this->userFactory = new InMemoryFactory($this->encryptor);
         $this->userRepository = new UserRepository($this->userFactory);
+
+        $this->registeredUser = $this->userFactory->create(
+            new Name('test'),
+            new Email('test@example.com'),
+            new Password('password1'),
+            new DateTime()
+        );
+
+        $this->userRepository->save($this->registeredUser);
     }
 
     /**
@@ -36,19 +45,10 @@ class DeleteTest extends TestCase
      */
     public function ユーザーを論理削除できること(): void
     {
-        $user = $this->userFactory->create(
-            new Name('test'),
-            new Email('test@example.com'),
-            new Password('password1'),
-            new DateTime()
-        );
-
-        $this->userRepository->save($user);
-
         $delete = new Delete($this->userRepository);
-        $delete(new Id($user->id()));
+        $delete(new Id($this->registeredUser->id()));
 
-        $deletedUser = $this->userRepository->find(new Id($user->id()));
+        $deletedUser = $this->userRepository->find(new Id($this->registeredUser->id()));
         $deletedDate = new DateTime();
         $this->assertTrue(strpos($deletedUser->deletedDateTime(), $deletedDate->format('Y-m-d H')) !== false);
     }
@@ -56,11 +56,11 @@ class DeleteTest extends TestCase
     /**
      * @test
      */
-    public function 削除対象のユーザーが見つからない場合、レスポンスのステータスがfalseになること(): void
+    public function 削除対象のユーザーが見つからない場合、エラーの結果を返すこと(): void
     {
         $delete = new Delete($this->userRepository);
-        $response = $delete(new Id(999));
+        $result = $delete(new Id(999));
 
-        $this->assertSame('error', $response['status']);
+        $this->assertTrue($result->hasError());
     }
 }

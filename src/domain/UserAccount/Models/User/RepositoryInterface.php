@@ -27,7 +27,7 @@ interface RepositoryInterface
      * ユーザーエンティティを永続化
      *
      * @param User $user
-     * @return void
+     * @return User
      */
-    public function save(User $user): void;
+    public function save(User $user): User;
 }

@@ -8,7 +8,7 @@ use Domain\UserAccount\Models\User\Id;
 
 class Edit extends Controller
 {
-    private $getDetail;
+    private GetDetailInterface $getDetail;
 
     public function __construct(GetDetailInterface $getDetail)
     {

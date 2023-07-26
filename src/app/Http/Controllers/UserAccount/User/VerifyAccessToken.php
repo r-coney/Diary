@@ -3,10 +3,10 @@ namespace App\Http\Controllers\UserAccount\User;
 
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyTokenCommand;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyAccessTokenInterface;
-use Illuminate\Auth\AuthenticationException;
 
 class VerifyAccessToken extends Controller
 {
@@ -17,29 +17,28 @@ class VerifyAccessToken extends Controller
         $this->verifyAccessToken = $verifyAccessToken;
     }
 
-    public function __invoke(Request $request)
+    /**
+     * アクセストークンが有効か判定
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function __invoke(Request $request): JsonResponse
     {
         $verifyTokenCommand = new VerifyTokenCommand($request);
-
-        try {
-            ($this->verifyAccessToken)($verifyTokenCommand);
+        $result = ($this->verifyAccessToken)($verifyTokenCommand);
+        if (!$result->hasError()) {
             $response = [
                 'status' => 'success',
                 'message' => 'Authentication Success',
             ];
             $statusCode = 200;
-        } catch (AuthenticationException $e) {
+        } else {
             $response = [
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => $result->error(),
             ];
             $statusCode = 401;
-        } catch (Exception $e) {
-            $response = [
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ];
-            $statusCode = 500;
         }
 
         return response()->json(data: $response, status: $statusCode);

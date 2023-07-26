@@ -1,9 +1,10 @@
 <?php
 namespace App\UserAccount\UseCase\User\Edit;
 
-use App\Exceptions\UserAccount\User\UseCase\CanNotEditUserException;
-use App\UserAccount\UseCase\User\Edit\EditCommandInterface;
+use InvalidArgumentException;
 use Illuminate\Support\Facades\DB;
+use App\UserAccount\Result;
+use App\UserAccount\UseCase\User\Edit\EditCommandInterface;
 use Domain\UserAccount\Models\User\Id;
 use Domain\UserAccount\Models\User\Name;
 use Domain\UserAccount\Models\User\Email;
@@ -24,14 +25,14 @@ class Edit implements EditInterface
         $this->encryptor = $encryptor;
     }
 
-    public function __invoke(EditCommandInterface $command): array
+    public function __invoke(EditCommandInterface $command): Result
     {
         try {
-            $user = DB::transaction(function () use ($command) {
+            $editedUser = DB::transaction(function () use ($command) {
                 $user = $this->userRepository->find(new Id($command->userId()));
 
                 if (!$user->verifyPassword($this->encryptor, new Password($command->currentPassword()))) {
-                    throw new CanNotEditUserException('パスワードが一致しません');
+                    throw new InvalidArgumentException('Password does not match');
                 }
 
                 if ($command->hasNewName()) {
@@ -44,37 +45,25 @@ class Edit implements EditInterface
 
                 if ($command->hasNewPassword()) {
                     if ($command->newPassword() !== $command->newPasswordConfirmation()) {
-                        throw new CanNotEditUserException('新しいパスワードが確認用のパスワードと一致しません');
+                        throw new InvalidArgumentException('New password does not match confirmation password');
                     }
 
                     $newPassword = new Password($command->newPassword());
                     $user->changePassword($newPassword->encrypt($this->encryptor));
                 }
+                $editedUser = $this->userRepository->save($user);
 
-                $this->userRepository->save($user);
-
-                return $user;
+                return $editedUser;
             });
 
-            $response = [
-                'status' => 'success',
-                'user' => [
-                    'id' => $user->id(),
-                    'name' => $user->name(),
-                    'email' => $user->email(),
-                    'registeredDateTime' => $user->registeredDateTime(),
-                    'updatedDateTime' => $user->updatedDateTime(),
-                ],
-            ];
+            $result = Result::ofValue($editedUser);
+        } catch (InvalidArgumentException $e) {
+            $result = Result::ofError($e->getMessage());
         } catch (Exception $e) {
             Log::error($e->getMessage());
-
-            $response = [
-                'status' => 'error',
-                'message' => $e->getMessage(),
-            ];
+            $result = Result::ofError($e->getMessage());
         }
 
-        return $response;
+        return $result;
     }
 }

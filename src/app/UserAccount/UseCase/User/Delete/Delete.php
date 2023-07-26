@@ -5,6 +5,7 @@ use DateTime;
 use Exception;
 use App\UserAccount\UseCase\User\Delete\DeleteInterface;
 use App\Exceptions\UserAccount\User\UseCase\UserNotFoundException;
+use App\UserAccount\Result;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Domain\UserAccount\Models\User\Id;
@@ -19,32 +20,28 @@ class Delete implements DeleteInterface
         $this->userRepository = $userRepository;
     }
 
-    public function __invoke(Id $id): array
+    public function __invoke(Id $id): Result
     {
         $user = $this->userRepository->find($id);
 
         try {
             if (is_null($user)) {
-                throw new UserNotFoundException('ユーザーが見つかりませんでした');
+                throw new UserNotFoundException('User not found. ID: ' . $id->value());
             }
 
-            DB::transaction(function () use ($user) {
+            $deletedUser = DB::transaction(function () use ($user) {
                 $user->changeDeletedDateTime(new DateTime());
-                $this->userRepository->save($user);
+                return $this->userRepository->save($user);
             });
 
-            $response = [
-                'status' => 'success'
-            ];
+            $result = Result::ofValue($deletedUser);
+        } catch (UserNotFoundException $e) {
+            $result = Result::ofError($e->getMessage());
         } catch (Exception $e) {
             Log::error($e->getMessage());
-
-            $response = [
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ];
+            $result = Result::ofError($e->getMessage());
         }
 
-        return $response;
+        return $result;
     }
 }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\UserAccount\User;
 
+use App\Exceptions\UserAccount\User\UseCase\CanNotRegisterUserException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\UserAccount\UseCase\User\Register\RegisterCommand;
 use App\UserAccount\UseCase\User\Register\RegisterInterface;
+use Illuminate\Http\JsonResponse;
 
 class Store extends Controller
 {
@@ -17,19 +19,35 @@ class Store extends Controller
         $this->register = $register;
     }
 
-    public function __invoke(Request $request)
+    /**
+     * ユーザーアカウントを新規登録
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function __invoke(Request $request): JsonResponse
     {
-        $registerCommand = new RegisterCommand(
-            $request->input('name'),
-            $request->input('email'),
-            $request->input('password'),
-            $request->input('passwordConfirmation')
-        );
+        $result = ($this->register)(new RegisterCommand($request));
+        if (!$result->hasError()) {
+            $registeredUser = $result->value();
+            $response = [
+                'status' => 'success',
+                'user' => [
+                    'id' => $registeredUser->id(),
+                    'name' => $registeredUser->name(),
+                    'email' => $registeredUser->email(),
+                    'registered_datetime' => $registeredUser->registeredDatetime(),
+                ],
+            ];
+            $statusCode = 200;
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => $result->error(),
+            ];
+            $statusCode = 400;
+        }
 
-        $response = ($this->register)($registerCommand);
-
-        return redirect()->route('userAccount.user.detail', [
-            'id' => $response['user']['id'],
-        ]);
+        return response()->json($response, $statusCode);
     }
 }

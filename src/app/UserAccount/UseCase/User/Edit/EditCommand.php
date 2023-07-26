@@ -1,6 +1,9 @@
 <?php
 namespace App\UserAccount\UseCase\User\Edit;
 
+use Illuminate\Http\Request;
+use App\UserAccount\Consts\UserConst;
+
 class EditCommand implements EditCommandInterface
 {
     private int $userId;
@@ -8,22 +11,18 @@ class EditCommand implements EditCommandInterface
     private ?string $newEmail;
     private ?string $newPassword;
     private ?string $newPasswordConfirmation;
-    private string $currentPassword;
+    private ?string $currentPassword;
 
     public function __construct(
         int $userId,
-        ?string $newName = null,
-        ?string $newEmail = null,
-        ?string $newPassword = null,
-        ?string $newPasswordConfirmation = null,
-        string $currentPassword
+        Request $request
     ) {
         $this->userId = $userId;
-        $this->newName = $newName;
-        $this->newEmail = $newEmail;
-        $this->newPassword = $newPassword;
-        $this->newPasswordConfirmation = $newPasswordConfirmation;
-        $this->currentPassword = $currentPassword;
+        $this->newName = $request->input(UserConst::INPUT_NEW_NAME);
+        $this->newEmail = $request->input(UserConst::INPUT_NEW_EMAIL);
+        $this->newPassword = $request->input(UserConst::INPUT_NEW_PASSWORD);
+        $this->newPasswordConfirmation = $request->input(UserConst::INPUT_NEW_PASSWORD_CONFIRMATION);
+        $this->currentPassword = $request->input(UserConst::INPUT_CURRENT_PASSWORD);
     }
 
     public function userId(): int
@@ -66,7 +65,7 @@ class EditCommand implements EditCommandInterface
         return $this->newPasswordConfirmation;
     }
 
-    public function currentPassword(): string
+    public function currentPassword(): ?string
     {
         return $this->currentPassword;
     }

@@ -21,6 +21,10 @@ class UserQueryService implements UserQueryServiceInterface
         $pagedUsers = array_slice($this->userRepository->store(), $offset, $command->perPage());
         $totalPages = ceil(count($this->userRepository->store()) / $command->perPage());
 
-        return new UserListQueryData($pagedUsers, $totalPages);
+        return new UserListQueryData(
+            userList: $pagedUsers,
+            currentPage: $command->page(),
+            totalPages: $totalPages
+        );
     }
 }

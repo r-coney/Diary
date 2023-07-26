@@ -11,6 +11,13 @@ interface UserListQueryDataInterface
     public function userList(): array;
 
     /**
+     * 取得したページを返す
+     *
+     * @return int
+     */
+    public function currentPage(): int;
+
+    /**
      * ページ数を返す
      *
      * @return int

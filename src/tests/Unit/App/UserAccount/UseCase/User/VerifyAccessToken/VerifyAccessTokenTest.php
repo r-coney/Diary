@@ -4,13 +4,12 @@ namespace Tests\Unit\App\UserAccount\UseCase\User\VerifyAccessToken;
 use Tests\TestCase;
 use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Auth\AuthenticationException;
 use App\Models\AccessToken;
 use App\UserAccount\Infrastructure\Encryptors\BcryptEncryptor;
 use App\UserAccount\Infrastructure\Services\AccessTokenService;
 use App\UserAccount\Infrastructure\Services\AccessTokenServiceInterface;
-use App\UserAccount\Infrastructure\Test\Repositories\AccessTokenRepository;
-use App\UserAccount\Infrastructure\Test\Repositories\UserRepository;
+use App\UserAccount\Infrastructure\InMemory\Repositories\AccessTokenRepository;
+use App\UserAccount\Infrastructure\InMemory\Repositories\UserRepository;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyAccessToken;
 use App\UserAccount\UseCase\User\VerifyAccessToken\VerifyTokenCommand;
 use Domain\UserAccount\Models\User\Id;
@@ -58,61 +57,72 @@ class VerifyAccessTokenTest extends TestCase
     /**
      * @test
      */
-    public function 有効なユーザーIDとアクセストークンがリクエストされた場合、trueを返すこと(): void
+    public function 有効なユーザーIDと有効なアクセストークンがリクエストされた場合、認証に成功すること(): void
     {
         if (!$this->setRequestValue(userId: $this->registeredUser->id(), token: $this->accessToken->token)) {
             exit;
         }
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
+        $result = $verifyAccessToken($verifyTokenCommand);
 
-        $this->assertTrue($verifyAccessToken($verifyTokenCommand));
+        $this->assertFalse($result->hasError());
     }
 
     /**
      * @test
      */
-    public function 存在しないユーザーIDとアクセストークンがリクエストされた場合、例外を投げること(): void
+    public function 存在しないユーザーIDと有効なアクセストークンがリクエストされた場合、認証に失敗すること(): void
     {
         if (!$this->setRequestValue(userId: 9999999, token: $this->accessToken->token)) {
             exit;
         }
-        $this->expectException(AuthenticationException::class);
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
-        $verifyAccessToken($verifyTokenCommand);
+        $result = $verifyAccessToken($verifyTokenCommand);
+
+        $this->assertTrue($result->hasError());
     }
 
     /**
      * @test
      */
-    public function 有効なユーザーIDと存在しないアクセストークンがリクエストされた場合、例外を投げること(): void
+    public function 有効なユーザーIDと存在しないアクセストークンがリクエストされた場合、認証に失敗すること(): void
     {
         if (!$this->setRequestValue(userId: $this->registeredUser->id(), token: 'unsaved token')) {
             exit;
         }
-        $this->expectException(AuthenticationException::class);
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
-        $verifyAccessToken($verifyTokenCommand);
+        $result = $verifyAccessToken($verifyTokenCommand);
+
+        $this->assertTrue($result->hasError());
     }
 
     /**
      * @test
      */
-    public function 有効なユーザーIDとアクセストークンがリクエストされが、トークンの有効期限が切れている場合、例外を投げること(): void
+    public function 有効なユーザーIDとアクセストークンがリクエストされが、トークンの有効期限が切れている場合、認証に失敗すること(): void
     {
         $this->accessToken->expires_at = date('Y-m-d', strtotime('-1 day'));
         $this->accessTokenRepository->save($this->accessToken);
         if (!$this->setRequestValue($this->registeredUser->id(), $this->accessToken->token)) {
             exit;
         }
-        $this->expectException(AuthenticationException::class);
         $verifyTokenCommand = new VerifyTokenCommand($this->request);
         $verifyAccessToken = new VerifyAccessToken($this->userRepository, $this->accessTokenRepository, $this->accessTokenService);
-        $verifyAccessToken($verifyTokenCommand);
+        $result = $verifyAccessToken($verifyTokenCommand);
+
+        $this->assertTrue($result->hasError());
     }
 
+    /**
+     * Requestの返り値を設定
+     *
+     * @param int|null $userId
+     * @param string|null $token
+     * @return bool
+     */
     private function setRequestValue(?int $userId, ?string $token): bool
     {
         $this->request->shouldReceive('input')

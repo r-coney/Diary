@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\UserAccount\User;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\UserAccount\UseCase\User\GetList\GetListCommand;
 use App\UserAccount\UseCase\User\GetList\GetListInterface;
@@ -16,13 +17,32 @@ class Index extends Controller
         $this->getList = $getList;
     }
 
-    public function __invoke(Request $request)
+    /**
+     * ユーザー一覧を取得
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function __invoke(Request $request): JsonResponse
     {
-        $userListData = ($this->getList)(new GetListCommand(
-            $request->query('page', 1),
-            config('UserAccount.constants.userListPerPage')
-        ));
+        $result = ($this->getList)(new GetListCommand($request));
+        if (!$result->hasError()) {
+            $userListData = $result->value();
+            $response = [
+                'status' => 'success',
+                'users' => $userListData->userList(),
+                'currentPage' => $userListData->currentPage(),
+                'totalPages' => $userListData->totalPages(),
+            ];
+            $statusCode = 200;
+        } else {
+            $response = [
+                'status' => 'error',
+                'message' => $result->error(),
+            ];
+            $statusCode = 400;
+        }
 
-        return view('user_account.user.index', ['userList' => $userListData->userList()]);
+        return response()->json($response, $statusCode);
     }
 }
