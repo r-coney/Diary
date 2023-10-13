@@ -1,4 +1,4 @@
-<h2>日記詳細</h2>
+<h2>日記詳細★</h2>
 
 {{ $diaryData->title }}
 {{ $diaryData->content }}
